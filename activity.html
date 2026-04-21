@@ -146,7 +146,7 @@
 
     /* ── PAGE HERO ──────────────────────────────────────── */
     .page-hero {
-      padding: 80px 24px 60px;
+      padding: 80px 24px 140px;
       text-align: center;
       background:
         radial-gradient(ellipse 70% 60% at 50% 40%, rgba(245,184,0,.06) 0%, transparent 70%),
@@ -544,6 +544,23 @@
     /* card thumb with real photo */
     .event-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
+    /* ── PAGINATION ─────────────────────────────── */
+    .pagination {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-top: 40px; flex-wrap: wrap;
+    }
+    .page-btn {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: var(--navy-card); border: 1px solid var(--border);
+      color: var(--grey); font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .page-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 800; }
+    .page-btn:disabled { opacity: .3; cursor: default; }
+    .page-btn.arrow { font-size: 1rem; }
+
     /* ── EMPTY STATE ────────────────────────────────── */
     .empty-state {
       text-align: center; padding: 80px 24px;
@@ -644,12 +661,12 @@
 <!-- ── TICKER ─────────────────────────────────────────────────── -->
 <div class="ticker-wrapper">
   <div class="ticker-inner">
-    <span class="ticker-item" data-ko="3기 활동 아카이빙 중" data-en="Archiving 3rd cohort activities">3기 활동 아카이빙 중</span>
+    <span class="ticker-item" data-ko="1기 활동 아카이빙 중" data-en="Archiving 1st cohort activities">1기 활동 아카이빙 중</span>
     <span class="ticker-item" data-ko="매주 정기 세션 운영" data-en="Weekly regular sessions">매주 정기 세션 운영</span>
     <span class="ticker-item" data-ko="리서치 발표 · 딜 케이스 스터디" data-en="Research presentations · Deal case studies">리서치 발표 · 딜 케이스 스터디</span>
     <span class="ticker-item" data-ko="네트워킹 이벤트 · 세미나" data-en="Networking events · Seminars">네트워킹 이벤트 · 세미나</span>
     <span class="ticker-item" data-ko="금융권 멘토링 프로그램" data-en="Finance industry mentoring program">금융권 멘토링 프로그램</span>
-    <span class="ticker-item" data-ko="3기 활동 아카이빙 중" data-en="Archiving 3rd cohort activities">3기 활동 아카이빙 중</span>
+    <span class="ticker-item" data-ko="1기 활동 아카이빙 중" data-en="Archiving 1st cohort activities">1기 활동 아카이빙 중</span>
     <span class="ticker-item" data-ko="매주 정기 세션 운영" data-en="Weekly regular sessions">매주 정기 세션 운영</span>
     <span class="ticker-item" data-ko="리서치 발표 · 딜 케이스 스터디" data-en="Research presentations · Deal case studies">리서치 발표 · 딜 케이스 스터디</span>
     <span class="ticker-item" data-ko="네트워킹 이벤트 · 세미나" data-en="Networking events · Seminars">네트워킹 이벤트 · 세미나</span>
@@ -690,6 +707,9 @@
     <!-- Week List -->
     <div class="week-list" id="weekList"></div>
 
+    <!-- Pagination -->
+    <div class="pagination" id="weekPagination"></div>
+
     <!-- Empty state -->
     <div class="empty-state" id="weekEmpty" style="display:none;">
       <div class="empty-icon">📂</div>
@@ -721,6 +741,9 @@
 
     <!-- Events Grid -->
     <div class="events-grid" id="eventsGrid"></div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="eventPagination"></div>
 
     <!-- Empty state -->
     <div class="empty-state" id="eventsEmpty" style="display:none;">
@@ -816,7 +839,7 @@
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">주차 번호</label>
-        <input class="form-input" type="text" id="wk-num" placeholder="예: 3기 1주차" />
+        <input class="form-input" type="text" id="wk-num" placeholder="예: 1기 1주차" />
       </div>
       <div class="form-group">
         <label class="form-label">날짜</label>
@@ -1161,6 +1184,8 @@ document.addEventListener('DOMContentLoaded', () => {
 ───────────────────────────────────────────── */
 let weekFilter = 'all';
 let weekSearch = '';
+let weekPage = 1;
+const WEEK_PER_PAGE = 6;
 
 function resetWeekForm() {
   editingWeekId = null;
@@ -1270,6 +1295,24 @@ async function translateWeekPost(p) {
   }
 }
 
+function renderPagination(containerId, currentPage, totalPages, goFn) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (totalPages <= 1) { el.innerHTML = ''; return; }
+  let html = `<button class="page-btn arrow" onclick="${goFn}(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="${goFn}(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn arrow" onclick="${goFn}(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  el.innerHTML = html;
+}
+
+function goWeekPage(page) {
+  weekPage = page;
+  renderWeek();
+  document.getElementById('tab-weekly').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function renderWeek() {
   const list = document.getElementById('weekList');
   const empty = document.getElementById('weekEmpty');
@@ -1278,18 +1321,21 @@ function renderWeek() {
     const matchSearch = !weekSearch || p.title.includes(weekSearch) || p.num.includes(weekSearch) || p.content.includes(weekSearch);
     return matchTeam && matchSearch;
   });
-  if (filtered.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  if (filtered.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; document.getElementById('weekPagination').innerHTML = ''; return; }
   empty.style.display = 'none';
+
+  const totalPages = Math.ceil(filtered.length / WEEK_PER_PAGE);
+  if (weekPage > totalPages) weekPage = totalPages;
+  const paged = filtered.slice((weekPage - 1) * WEEK_PER_PAGE, weekPage * WEEK_PER_PAGE);
 
   window.weekPostPhotos = {};
   filtered.forEach(p => { if (p.photos) window.weekPostPhotos[p.id] = p.photos; });
 
   if (currentLang === 'ko') {
-    list.innerHTML = filtered.map((p, i) => renderWeekItem(p, i, null)).join('');
+    list.innerHTML = paged.map((p, i) => renderWeekItem(p, i, null)).join('');
     list.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   } else {
-    // skeleton
-    list.innerHTML = filtered.map((p, i) => `
+    list.innerHTML = paged.map((p, i) => `
       <div class="week-item fade-up visible" id="wk-${p.id}" style="opacity:.4;transition-delay:${i*0.05}s">
         <div class="week-header">
           <div class="week-header-left">
@@ -1303,7 +1349,7 @@ function renderWeek() {
         </div>
       </div>`).join('');
 
-    filtered.forEach(async (p, i) => {
+    paged.forEach(async (p, i) => {
       const translated = await translateWeekPost(p);
       const el = document.getElementById('wk-' + p.id);
       if (!el) return;
@@ -1317,6 +1363,8 @@ function renderWeek() {
       }
     });
   }
+
+  renderPagination('weekPagination', weekPage, totalPages, 'goWeekPage');
 }
 
 function toggleWeek(id) {
@@ -1350,12 +1398,12 @@ function deleteWeek(id) {
 }
 
 function filterWeek(val, btn) {
-  weekFilter = val;
+  weekFilter = val; weekPage = 1;
   document.querySelectorAll('#tab-weekly .filter-tag').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderWeek();
 }
-function searchWeek(val) { weekSearch = val; renderWeek(); }
+function searchWeek(val) { weekSearch = val; weekPage = 1; renderWeek(); }
 
 /* ─────────────────────────────────────────────
    PHOTO HANDLING
@@ -1447,6 +1495,8 @@ document.addEventListener('keydown', e => {
 ───────────────────────────────────────────── */
 let eventFilter = 'all';
 let eventSearch = '';
+let eventPage = 1;
+const EVENT_PER_PAGE = 6;
 
 function resetEventForm() {
   editingEventId = null;
@@ -1551,6 +1601,12 @@ function renderEventCard(p, i, translated) {
     </div>`;
 }
 
+function goEventPage(page) {
+  eventPage = page;
+  renderEvents();
+  document.getElementById('tab-events').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function renderEvents() {
   const grid  = document.getElementById('eventsGrid');
   const empty = document.getElementById('eventsEmpty');
@@ -1559,16 +1615,18 @@ function renderEvents() {
     const matchSearch = !eventSearch || p.title.includes(eventSearch) || (p.excerpt||'').includes(eventSearch) || p.content.includes(eventSearch);
     return matchCat && matchSearch;
   });
-  if (filtered.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  if (filtered.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; document.getElementById('eventPagination').innerHTML = ''; return; }
   empty.style.display = 'none';
 
+  const totalPages = Math.ceil(filtered.length / EVENT_PER_PAGE);
+  if (eventPage > totalPages) eventPage = totalPages;
+  const paged = filtered.slice((eventPage - 1) * EVENT_PER_PAGE, eventPage * EVENT_PER_PAGE);
+
   if (currentLang === 'ko') {
-    // Korean — render immediately, no translation needed
-    grid.innerHTML = filtered.map((p, i) => renderEventCard(p, i, null)).join('');
+    grid.innerHTML = paged.map((p, i) => renderEventCard(p, i, null)).join('');
     grid.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   } else {
-    // English — show skeleton, then translate each card and swap in
-    grid.innerHTML = filtered.map((p, i) => `
+    grid.innerHTML = paged.map((p, i) => `
       <div class="event-card fade-up visible" style="transition-delay:${i*0.07}s;opacity:.4;" id="ecard-${p.id}">
         <div class="event-thumb">
           ${p.photos?.length ? `<img src="${p.photos[0]}" alt="" />` : '<div class="event-thumb-placeholder">🎉</div>'}
@@ -1582,7 +1640,7 @@ function renderEvents() {
         </div>
       </div>`).join('');
 
-    filtered.forEach(async (p, i) => {
+    paged.forEach(async (p, i) => {
       const translated = await translatePost(p);
       const card = document.getElementById('ecard-' + p.id);
       if (!card) return;
@@ -1591,6 +1649,8 @@ function renderEvents() {
       if (newCard) { newCard.style.opacity = '1'; observer.observe(newCard); }
     });
   }
+
+  renderPagination('eventPagination', eventPage, totalPages, 'goEventPage');
 }
 
 function viewEvent(id) {
@@ -1665,12 +1725,12 @@ function deleteEvent(id) {
 }
 
 function filterEvent(val, btn) {
-  eventFilter = val;
+  eventFilter = val; eventPage = 1;
   document.querySelectorAll('#tab-events .filter-tag').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderEvents();
 }
-function searchEvent(val) { eventSearch = val; renderEvents(); }
+function searchEvent(val) { eventSearch = val; eventPage = 1; renderEvents(); }
 
 /* ─────────────────────────────────────────────
    UTILS
@@ -1692,21 +1752,52 @@ function shortenUrl(url) {
    SAMPLE DATA (처음 방문 시)
 ───────────────────────────────────────────── */
 function loadSampleData() {
-  if (weekPosts.length === 0) {
-    weekPosts = [
-      {
-        id: 'sample-w1', num: '3기 1주차', title: 'OT 및 팀 구성, 금융시장 오버뷰',
-        date: '2026-03-07', team: '전체세션', presenter: '운영진',
-        content: '3기 첫 세션으로 FINBASE 소개 및 운영 방식 안내, 팀 구성을 진행했습니다.\n각 리서치팀의 연구 방향을 소개하고, 금융시장 전반에 대한 오버뷰 강의를 진행했습니다.\n참여 인원: 23명',
-        links: [], tags: ['OT', '팀구성', '금융시장'], createdAt: Date.now()-7*86400000
-      },
-      {
-        id: 'sample-w2', num: '3기 2주차', title: 'IPO 밸류에이션 기초 발표 및 딜 케이스 토론',
-        date: '2026-03-14', team: '리서치2팀', presenter: '김○○, 이○○',
-        content: '이번 세션에서는 IPO 프로세스 전반과 밸류에이션 방법론을 집중적으로 다뤘습니다.\nPER, EV/EBITDA 등 주요 멀티플 지표를 실제 케이스에 적용해보는 실습을 진행했으며, 최근 국내 IPO 사례를 중심으로 활발한 토론이 이루어졌습니다.',
-        links: ['https://drive.google.com'], tags: ['IPO', '밸류에이션', '리서치2팀'], createdAt: Date.now()-14*86400000
-      }
-    ];
+  const sampleWeeks = [
+    {
+      id: 'sample-ct3', num: '1기 3주차', title: 'Mason Day 플래닝',
+      date: '2026-03-21', team: '콘텐츠팀', presenter: '',
+      content: 'George Mason Korea 내 외국인 학생들을 대상으로 한국 문화를 알리는 프로젝트를 기획했습니다.\n민속놀이(윷놀이, 제기차기 등)를 함께 체험하는 Mason Day 이벤트를 플래닝하며, 문화 교류와 FINBASE 홍보를 동시에 달성하는 방향으로 세부 계획을 수립했습니다.',
+      links: [], tags: ['Mason Day', '문화교류', '이벤트기획'], photos: [], createdAt: Date.now()-7*86400000
+    },
+    {
+      id: 'sample-ct2', num: '1기 2주차', title: 'Movie Night — The Big Short 상영',
+      date: '2026-03-14', team: '콘텐츠팀', presenter: '',
+      content: '교내 친목 활동으로 영화 <The Big Short>를 함께 관람하는 Movie Night을 진행했습니다.\n2008년 금융위기를 다룬 이 영화를 통해 서브프라임 모기지, CDS, CDO 등 실제 금융 개념을 재미있게 이해하는 시간이 되었습니다.\n상영 후 멤버들끼리 영화 속 금융 이슈에 대해 자유롭게 이야기를 나누며 친목도 다졌습니다.',
+      links: [], tags: ['Movie Night', 'The Big Short', '친목', '금융교육'], photos: [], createdAt: Date.now()-14*86400000
+    },
+    {
+      id: 'sample-ct1', num: '1기 1주차', title: '웹사이트 제작 토론 및 홍보 플래닝',
+      date: '2026-03-07', team: '콘텐츠팀', presenter: '',
+      content: 'FINBASE 공식 웹사이트 제작 방향에 대한 팀 토론을 진행했습니다.\n페이지 구성, 디자인 컨셉, 업데이트 운영 방식 등을 논의했으며, SNS 채널 운영 및 대외 홍보 전략도 함께 플래닝했습니다.\n인스타그램 콘텐츠 제작 계획과 학교 내 홍보 방안도 구체적으로 논의했습니다.',
+      links: [], tags: ['웹사이트', '홍보', '플래닝'], photos: [], createdAt: Date.now()-21*86400000
+    },
+    {
+      id: 'sample-w3', num: '1기 3주차', title: '리서치 시작',
+      date: '2026-03-21', team: '전체세션', presenter: '',
+      content: '본격적인 리서치를 시작했습니다.\n각 팀별로 주제를 확정하고 자료 수집 및 분석에 돌입했습니다.',
+      links: [], tags: ['리서치', '분석'], photos: [], createdAt: Date.now()-7*86400000
+    },
+    {
+      id: 'sample-w2', num: '1기 2주차', title: '전문가 초청 강의',
+      date: '2026-03-14', team: '전체세션', presenter: '',
+      content: '금융권 전문가를 초청하여 강의를 진행했습니다.\n현장의 생생한 인사이트와 실무 경험을 바탕으로 한 강의로 멤버들의 큰 호응을 얻었습니다.',
+      links: [], tags: ['전문가초청', '강의'], photos: [], createdAt: Date.now()-14*86400000
+    },
+    {
+      id: 'sample-w1', num: '1기 1주차', title: '토론 역할분담 및 리서치 플래닝',
+      date: '2026-03-07', team: '전체세션', presenter: '',
+      content: '첫 세션으로 팀별 토론 역할을 분담하고 리서치 플래닝을 진행했습니다.\n각 팀의 연구 방향과 일정을 수립하며 한 학기 활동의 기초를 다졌습니다.',
+      links: [], tags: ['역할분담', '플래닝', '토론'], photos: [], createdAt: Date.now()-21*86400000
+    }
+  ];
+
+  // 없는 ID만 추가 (기존 데이터 보존)
+  const existingIds = new Set(weekPosts.map(p => p.id));
+  const toAdd = sampleWeeks.filter(p => !existingIds.has(p.id));
+  if (toAdd.length > 0) {
+    weekPosts = [...weekPosts, ...toAdd];
+    // 날짜 최신순 정렬
+    weekPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
     saveWeek();
   }
   if (eventPosts.length === 0) {
@@ -1716,7 +1807,7 @@ function loadSampleData() {
         category: '세미나', date: '2026-03-20',
         author: '콘텐츠팀',
         excerpt: '국내 주요 IB 현직자를 모시고 진행한 커리어 세미나. 현장의 생생한 이야기를 들을 수 있었습니다.',
-        content: '지난 3월 20일, FINBASE 3기 특별 세미나가 진행되었습니다.\n\n이번 세미나에는 국내 주요 증권사 IB부서 현직자 두 분을 초청하여 투자은행 업무 전반과 커리어 패스에 대한 심도 있는 이야기를 나눌 수 있었습니다.\n\n참석한 멤버들은 실제 딜 프로세스와 IB 취업 준비 방법에 대해 많은 인사이트를 얻었으며, 질의응답 시간도 매우 열정적으로 진행되었습니다.\n\n앞으로도 FINBASE는 이러한 네트워킹 기회를 지속적으로 마련할 예정입니다.',
+        content: '지난 3월 20일, FINBASE 1기 특별 세미나가 진행되었습니다.\n\n이번 세미나에는 국내 주요 증권사 IB부서 현직자 두 분을 초청하여 투자은행 업무 전반과 커리어 패스에 대한 심도 있는 이야기를 나눌 수 있었습니다.\n\n참석한 멤버들은 실제 딜 프로세스와 IB 취업 준비 방법에 대해 많은 인사이트를 얻었으며, 질의응답 시간도 매우 열정적으로 진행되었습니다.\n\n앞으로도 FINBASE는 이러한 네트워킹 기회를 지속적으로 마련할 예정입니다.',
         photos: [],
         createdAt: Date.now()-3*86400000
       }
