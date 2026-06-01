@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FINBASE – Your Base for Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#060e1a;--navy-2:#0a1628;--navy-card:#0f1e35;--navy-light:#132444;
+  --gold:#e8a800;--gold-2:#f5c842;--gold-dim:rgba(232,168,0,.1);--gold-border:rgba(232,168,0,.25);
+  --red:#d63447;--white:#f0eeea;--grey:#7a90a8;--grey-2:#4a5d72;
+  --border:rgba(232,168,0,.18);
+}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--white);font-family:'Syne','Noto Sans KR',sans-serif;overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}ul{list-style:none}
+img{max-width:100%}
+/* ── PAGE SYSTEM ── */
+.page{display:none}.page.active{display:block}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:2px}
+/* ── HEADER ── */
+header{position:fixed;top:0;left:0;right:0;z-index:1000;transition:transform .35s ease,background .3s}
+header.scrolled{background:rgba(6,14,26,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:72px;display:flex;align-items:center;gap:48px}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;flex-shrink:0}
+.logo-mark{width:104px;height:44px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.logo-mark img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 6px rgba(232,168,0,.3))}
+.logo-text{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--gold);letter-spacing:.12em}
+/* ── LANG TOGGLE ── */
+.lang-toggle{display:flex;align-items:center;gap:0;background:var(--navy-light);border:1px solid var(--border);border-radius:6px;overflow:hidden;flex-shrink:0}
+.lang-btn{padding:6px 13px;font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--grey);background:none;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.lang-btn.on{background:var(--gold);color:var(--navy)}
+.lang-btn:hover:not(.on){color:var(--white)}
+nav{display:flex;align-items:center;gap:2px;flex:1}
+.nav-btn{padding:8px 16px;font-size:.82rem;font-weight:600;color:var(--grey);background:none;border:none;cursor:pointer;border-radius:6px;transition:color .2s,background .2s;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;font-family:'Syne',sans-serif}
+.nav-btn:hover,.nav-btn.active{color:var(--gold);background:var(--gold-dim)}
+.header-cta{margin-left:auto;display:flex;align-items:center;gap:16px}
+.btn-apply-header{background:var(--gold);color:var(--navy);padding:9px 22px;border-radius:6px;font-size:.8rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.btn-apply-header:hover{background:var(--gold-2);transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s}
+/* ── MOBILE MENU ── */
+.mob-menu{display:none;position:fixed;inset:0;z-index:999;background:var(--navy-2);flex-direction:column;padding:90px 32px 60px;overflow-y:auto}
+.mob-menu.open{display:flex}
+.mob-close{position:absolute;top:22px;right:28px;background:none;border:none;color:var(--white);font-size:1.6rem;cursor:pointer;line-height:1}
+.mob-nav-btn{display:block;padding:18px 0;font-size:1.3rem;font-family:'DM Serif Display',serif;color:var(--grey);border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s}
+.mob-nav-btn:hover,.mob-nav-btn.active{color:var(--gold)}
+.mob-apply{margin-top:32px;background:var(--gold);color:var(--navy);padding:16px;border-radius:8px;font-size:1rem;font-weight:800;text-align:center;cursor:pointer;border:none;font-family:'Syne',sans-serif}
+/* ── TICKER ── */
+.ticker-wrap{background:var(--navy-light);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:9px 0;margin-top:72px}
+.ticker-inner{display:inline-block;animation:tick 35s linear infinite}
+.ticker-item{display:inline-block;margin-right:72px;font-size:.75rem;color:var(--grey);letter-spacing:.06em}
+.ticker-item::before{content:'◆';color:var(--gold);margin-right:10px;font-size:.55rem}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ── SHARED SECTION ── */
+.section-wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+.section-h{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,3.2rem);line-height:1.15;margin-bottom:20px}
+.section-h .g{color:var(--gold)}
+.divider-line{width:48px;height:2px;background:var(--gold);border-radius:1px;margin-bottom:28px}
+.section-p{font-size:.93rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.9;word-break:keep-all}
+/* ── FADE UP ── */
+.fu{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.fu.vis{opacity:1;transform:translateY(0)}
+.fd1{transition-delay:.1s}.fd2{transition-delay:.2s}.fd3{transition-delay:.3s}.fd4{transition-delay:.4s}.fd5{transition-delay:.5s}
+/* ── BTN ── */
+.btn-gold{background:var(--gold);color:var(--navy);padding:14px 36px;border-radius:7px;font-size:.88rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.05em;display:inline-block}
+.btn-gold:hover{background:var(--gold-2);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--white);padding:14px 36px;border-radius:7px;font-size:.88rem;font-weight:600;border:1.5px solid rgba(255,255,255,.25);cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+/* ─────────────────────────────────────
+   PAGE 1: HOME
+───────────────────────────────────── */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:100px 32px 80px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 30% 50%,rgba(232,168,0,.05) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 20%,rgba(232,168,0,.04) 0%,transparent 60%),var(--navy)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:72px 72px}
+.hero-inner{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1;width:100%}
+.hero-label{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--gold-border);border-radius:4px;padding:6px 18px;font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:36px}
+.hero-label::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-h{font-family:'DM Serif Display',serif;font-size:clamp(3rem,7vw,6.5rem);line-height:1.05;letter-spacing:-.01em;margin-bottom:32px}
+.hero-h em{color:var(--gold);font-style:italic}
+.hero-desc{font-size:1rem;color:var(--grey);max-width:560px;font-family:'Noto Sans KR',sans-serif;line-height:1.95;margin-bottom:48px;word-break:keep-all}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.hero-stats{position:absolute;bottom:60px;right:32px;display:flex;gap:0}
+.hs-item{text-align:center;padding:20px 36px;border-left:1px solid var(--border)}
+.hs-item:first-child{border-left:none}
+.hs-num{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--gold);line-height:1}
+.hs-label{font-size:.72rem;color:var(--grey);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.scroll-down{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--grey-2);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;animation:sbounce 2.5s ease infinite}
+.scroll-down svg{width:18px;height:18px}
+@keyframes sbounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+/* ─────────────────────────────────────
+   PAGE 2: ABOUT US
+───────────────────────────────────── */
+#page-about{padding:0 0 100px}
+.about-hero{padding:120px 32px 80px;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(232,168,0,.05),transparent 70%),var(--navy);text-align:center;position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:56px 56px}
+.about-hero-inner{position:relative;z-index:1}
+.about-intro{padding:80px 32px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;max-width:1280px;margin:0 auto}
+.about-text .section-h{font-size:clamp(1.8rem,3.5vw,2.8rem)}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.val-card{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:24px;transition:border-color .3s,transform .3s}
+.val-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.val-icon{font-size:1.6rem;margin-bottom:12px}
+.val-title{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.val-desc{font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all}
+.about-visual{display:flex;flex-direction:column;gap:16px}
+.stat-big{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;padding:36px;display:flex;flex-direction:column;gap:8px}
+.stat-big-num{font-family:'DM Serif Display',serif;font-size:4rem;color:var(--gold);line-height:1}
+.stat-big-label{font-size:.82rem;color:var(--grey);letter-spacing:.08em;text-transform:uppercase}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stat-sm{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center}
+.stat-sm-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:6px}
+.stat-sm-label{font-size:.75rem;color:var(--grey);letter-spacing:.08em;text-transform:uppercase}
+/* OFFICERS */
+.officers-section{padding:80px 32px;background:var(--navy-2)}
+.officers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;margin-top:48px}
+.officer-card{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;text-align:center;transition:transform .3s,border-color .3s;cursor:default}
+.officer-card:hover{transform:translateY(-5px);border-color:var(--gold)}
+.officer-avatar{width:72px;height:72px;border-radius:50%;background:var(--gold-dim);border:2px solid var(--gold-border);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold)}
+.officer-name{font-size:1rem;font-weight:700;margin-bottom:4px}
+.officer-role{font-size:.78rem;color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.officer-dept{font-size:.78rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif}
+/* ─────────────────────────────────────
+   PAGE 3: OUR PEOPLE
+───────────────────────────────────── */
+#page-people{padding:0 0 100px}
+.people-hero{padding:120px 32px 80px;text-align:center;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(232,168,0,.05),transparent 70%),var(--navy);position:relative;overflow:hidden}
+.people-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:56px 56px}
+.people-hero-inner{position:relative;z-index:1}
+.org-section{padding:80px 32px;background:var(--navy)}
+.org-chart{max-width:900px;margin:48px auto 0;display:flex;flex-direction:column;align-items:center;gap:0}
+.org-row{display:flex;justify-content:center;gap:20px;width:100%;position:relative;padding:20px 0}
+.org-row::before{content:'';position:absolute;top:0;left:50%;width:2px;height:20px;background:var(--border);transform:translateX(-50%)}
+.org-row:first-child::before{display:none}
+.org-line{position:absolute;top:0;left:0;right:0;height:2px;background:var(--border)}
+.org-card{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;text-align:center;min-width:140px;transition:border-color .3s}
+.org-card:hover{border-color:var(--gold)}
+.org-card.president{border-color:var(--gold);background:linear-gradient(135deg,var(--navy-card),rgba(232,168,0,.08))}
+.org-card-title{font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.org-card-name{font-size:.9rem;font-weight:700}
+.org-connector{width:2px;background:var(--border);margin:0 auto}
+.org-h-line{width:80%;height:2px;background:var(--border);margin:0 auto}
+.members-section{padding:80px 32px;background:var(--navy-2)}
+.dept-group{margin-bottom:56px}
+.dept-group-title{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;padding:10px 0;border-bottom:1px solid var(--border)}
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.member-card{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:20px 16px;text-align:center;transition:transform .25s,border-color .25s}
+.member-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.member-avatar{width:52px;height:52px;border-radius:50%;background:var(--gold-dim);border:1.5px solid var(--gold-border);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold)}
+.member-name{font-size:.88rem;font-weight:700;margin-bottom:3px}
+.member-dept{font-size:.72rem;color:var(--grey);letter-spacing:.06em}
+/* ─────────────────────────────────────
+   PAGE 4: RESEARCH
+───────────────────────────────────── */
+#page-research{padding:0 0 100px}
+.research-hero{padding:120px 32px 80px;text-align:center;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(232,168,0,.05),transparent 70%),var(--navy);position:relative;overflow:hidden}
+.research-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:56px 56px}
+.research-hero-inner{position:relative;z-index:1}
+.research-main{padding:80px 32px;background:var(--navy)}
+.research-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+.filter-pill{padding:7px 18px;border-radius:50px;font-size:.78rem;font-weight:600;border:1px solid var(--border);color:var(--grey);background:transparent;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.filter-pill:hover{border-color:var(--gold);color:var(--gold)}
+.filter-pill.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
+.research-card{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer;position:relative}
+.research-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.research-card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.research-card:hover::after{transform:scaleX(1)}
+.rc-header{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rc-type{font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:4px;padding:4px 10px;white-space:nowrap}
+.rc-date{font-size:.75rem;color:var(--grey-2)}
+.rc-body{padding:16px 24px 24px}
+.rc-title{font-size:1.05rem;font-weight:700;line-height:1.4;margin-bottom:10px}
+.rc-excerpt{font-size:.83rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:18px}
+.rc-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:16px}
+.rc-team{font-size:.75rem;color:var(--grey-2);font-weight:600;letter-spacing:.06em}
+.rc-arrow{font-size:.82rem;color:var(--gold);font-weight:700;display:flex;align-items:center;gap:4px;transition:gap .2s}
+.research-card:hover .rc-arrow{gap:8px}
+/* UPLOAD ADMIN */
+/* ── ADMIN BAR ── */
+.admin-bar{position:fixed;top:72px;left:0;right:0;z-index:998;background:linear-gradient(90deg,#1a0a00,#2a1500);border-bottom:2px solid var(--gold);display:none;align-items:center;gap:12px;padding:0 28px;height:46px;box-shadow:0 4px 24px rgba(232,168,0,.18)}
+.admin-bar.on{display:flex}
+.admin-bar-badge{display:flex;align-items:center;gap:7px;font-size:.72rem;font-weight:800;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;flex-shrink:0}
+.admin-bar-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite;flex-shrink:0}
+.admin-bar-divider{width:1px;height:20px;background:rgba(232,168,0,.25);margin:0 4px;flex-shrink:0}
+.admin-bar-btn{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:5px;font-size:.75rem;font-weight:700;letter-spacing:.05em;border:1px solid var(--gold-border);color:var(--gold);background:rgba(232,168,0,.08);cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;white-space:nowrap}
+.admin-bar-btn:hover{background:var(--gold);color:var(--navy)}
+.admin-bar-btn.red{border-color:rgba(214,52,71,.4);color:var(--red);background:rgba(214,52,71,.07)}
+.admin-bar-btn.red:hover{background:var(--red);color:#fff}
+.admin-bar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.admin-pushed{margin-top:118px !important}
+/* ── ADMIN FAB ── */
+.admin-fab{position:fixed;bottom:32px;right:32px;z-index:900;background:var(--gold);color:var(--navy);width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:none;cursor:pointer;box-shadow:0 8px 28px rgba(232,168,0,.35);transition:transform .2s,box-shadow .2s}
+.admin-fab.show{display:flex}
+.admin-fab:hover{transform:scale(1.08);box-shadow:0 12px 36px rgba(232,168,0,.5)}
+.write-choice-btn{display:flex;align-items:center;gap:14px;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;color:var(--white);cursor:pointer;text-align:left;transition:all .2s;font-family:'Syne',sans-serif;width:100%}
+.write-choice-btn:hover{border-color:var(--gold);background:var(--gold-dim);transform:translateX(3px)}
+/* ── CONFIRM MODAL ── */
+.confirm-modal{max-width:380px;text-align:center}
+.confirm-icon{font-size:2.2rem;margin-bottom:12px}
+.confirm-modal h2{font-size:1.15rem;margin-bottom:8px}
+.confirm-modal p{font-size:.87rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;margin-bottom:22px;line-height:1.7}
+.confirm-modal .form-actions{justify-content:center}
+/* ─────────────────────────────────────
+   PAGE 5: ACTIVITY
+───────────────────────────────────── */
+#page-activity{padding:0 0 100px}
+.act-hero{padding:120px 32px 80px;text-align:center;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(232,168,0,.05),transparent 70%),var(--navy);position:relative;overflow:hidden}
+.act-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:56px 56px}
+.act-hero-inner{position:relative;z-index:1}
+.activity-main{padding:80px 32px;background:var(--navy)}
+.act-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:48px;overflow-x:auto}
+.act-tab{padding:14px 28px;font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s,border-color .2s;font-family:'Syne',sans-serif}
+.act-tab:hover{color:var(--white)}
+.act-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.act-pane{display:none}.act-pane.on{display:block}
+/* Weekly */
+.week-filter{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;align-items:center}
+.week-list{display:flex;flex-direction:column;gap:14px}
+.week-item{background:var(--navy-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s}
+.week-item:hover{border-color:var(--gold)}
+.week-hd{display:flex;align-items:center;gap:18px;padding:22px 28px;cursor:pointer}
+.week-num-badge{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:5px;padding:4px 12px;white-space:nowrap;flex-shrink:0}
+.week-info{flex:1;min-width:0}
+.week-title{font-size:.97rem;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.week-meta{font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif}
+.week-tags{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.week-tag{font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:4px;border:1px solid var(--border);color:var(--grey-2)}
+.week-chevron{color:var(--grey-2);transition:transform .3s;flex-shrink:0;font-size:.85rem}
+.week-item.open .week-chevron{transform:rotate(180deg)}
+.week-body{display:none;border-top:1px solid var(--border);padding:24px 28px}
+.week-item.open .week-body{display:block}
+.week-body-text{font-size:.88rem;color:#a0b4c8;font-family:'Noto Sans KR',sans-serif;line-height:1.9;word-break:keep-all;margin-bottom:16px}
+.week-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:16px}
+.week-photos img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border);transition:opacity .2s,transform .2s}
+.week-photos img:hover{opacity:.85;transform:scale(1.02)}
+.week-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.week-link{display:flex;align-items:center;gap:6px;background:var(--navy-light);border:1px solid var(--border);border-radius:7px;padding:7px 13px;font-size:.78rem;color:var(--grey);transition:all .2s}
+.week-link:hover{border-color:var(--gold);color:var(--gold)}
+.week-admin-btns{display:flex;gap:8px;margin-top:14px}
+/* Events/Blog */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.ev-card{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative}
+.ev-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.ev-card:hover{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.ev-card:hover::after{transform:scaleX(1)}
+.ev-thumb{width:100%;height:190px;background:var(--navy-light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ev-thumb img{width:100%;height:100%;object-fit:cover}
+.ev-thumb-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--navy-light),var(--navy-card))}
+.ev-badge{position:absolute;top:12px;left:12px;background:var(--gold);color:var(--navy);font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:3px 9px;border-radius:4px;text-transform:uppercase}
+.ev-body{padding:22px}
+.ev-cat{font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.ev-title{font-size:1rem;font-weight:700;line-height:1.4;margin-bottom:8px}
+.ev-excerpt{font-size:.82rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ev-foot{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--grey-2)}
+.read-more-arrow{color:var(--gold);font-weight:700;font-size:.78rem;margin-top:10px;display:flex;align-items:center;gap:4px;transition:gap .2s}
+.ev-card:hover .read-more-arrow{gap:8px}
+/* Empty */
+.empty-box{text-align:center;padding:80px 24px;color:var(--grey)}
+.empty-icon{font-size:3rem;margin-bottom:16px;opacity:.4}
+.empty-box h3{font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--white)}
+.empty-box p{font-size:.85rem;font-family:'Noto Sans KR',sans-serif}
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:40px;flex-wrap:wrap}
+.pg-btn{width:38px;height:38px;border-radius:7px;background:var(--navy-card);border:1px solid var(--border);color:var(--grey);font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif}
+.pg-btn:hover{border-color:var(--gold);color:var(--gold)}
+.pg-btn.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.pg-btn:disabled{opacity:.3;cursor:default}
+/* ─────────────────────────────────────
+   PAGE 6: CONTACT
+───────────────────────────────────── */
+#page-contact{padding:0}
+.contact-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 32px 80px;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(232,168,0,.06),transparent 65%),var(--navy);position:relative;overflow:hidden}
+.contact-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.025) 1px,transparent 1px);background-size:56px 56px}
+.contact-inner{max-width:900px;margin:0 auto;width:100%;position:relative;z-index:1}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:56px}
+.contact-info-item{display:flex;align-items:flex-start;gap:18px;padding:28px;background:var(--navy-card);border:1px solid var(--border);border-radius:14px;transition:border-color .3s,transform .3s;margin-bottom:16px;cursor:pointer}
+.contact-info-item:hover{border-color:var(--gold);transform:translateX(4px)}
+.ci-icon{width:44px;height:44px;background:var(--gold-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.ci-text h4{font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.ci-text p{font-size:.92rem;color:var(--white)}
+.ci-text span{font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;margin-top:2px;display:block}
+.contact-form-side h3{font-family:'DM Serif Display',serif;font-size:1.8rem;margin-bottom:8px}
+.contact-form-side p{font-size:.88rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;margin-bottom:28px}
+.form-g{margin-bottom:18px}
+.form-label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin-bottom:8px}
+.form-input,.form-ta{width:100%;background:var(--navy-card);border:1px solid var(--border);border-radius:9px;padding:12px 16px;color:var(--white);font-size:.9rem;font-family:'Syne','Noto Sans KR',sans-serif;outline:none;transition:border-color .2s}
+.form-input::placeholder,.form-ta::placeholder{color:var(--grey-2)}
+.form-input:focus,.form-ta:focus{border-color:var(--gold)}
+.form-ta{resize:vertical;min-height:120px;line-height:1.7}
+/* ─────────────────────────────────────
+   PAGE 7: APPLY
+───────────────────────────────────── */
+#page-apply{padding:0}
+.apply-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 32px;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(232,168,0,.06),transparent 65%),var(--navy);position:relative;overflow:hidden;text-align:center}
+.apply-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.025) 1px,transparent 1px);background-size:56px 56px}
+.apply-inner{max-width:680px;position:relative;z-index:1}
+.apply-badge{display:inline-block;border:1px solid var(--red);border-radius:4px;padding:6px 18px;font-size:.7rem;font-weight:700;color:var(--red);letter-spacing:.18em;text-transform:uppercase;margin-bottom:32px}
+.apply-h{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,5vw,4rem);line-height:1.1;margin-bottom:24px}
+.apply-h .g{color:var(--gold)}
+.apply-desc{font-size:.95rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.9;margin-bottom:40px;word-break:keep-all}
+.apply-closed-box{background:var(--navy-card);border:1px solid rgba(214,52,71,.3);border-radius:16px;padding:40px;margin-bottom:40px}
+.apply-closed-icon{font-size:2.4rem;margin-bottom:16px}
+.apply-closed-title{font-size:1.2rem;font-weight:800;margin-bottom:8px}
+.apply-closed-desc{font-size:.88rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all}
+.apply-next-box{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;align-items:center;gap:20px;text-align:left}
+.anb-icon{width:52px;height:52px;background:var(--gold-dim);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.anb-text h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.anb-text p{font-size:.82rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.7;word-break:keep-all}
+/* ─────────────────────────────────────
+   MODALS
+───────────────────────────────────── */
+.modal-ov{display:none;position:fixed;inset:0;z-index:2000;background:rgba(3,8,18,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px}
+#confirmModal{z-index:3000}
+.modal-ov.open{display:flex}
+.modal{background:var(--navy-2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;padding:40px;position:relative}
+.modal-x{position:absolute;top:18px;right:20px;background:none;border:none;color:var(--grey);font-size:1.4rem;cursor:pointer;line-height:1;transition:color .2s}
+.modal-x:hover{color:var(--white)}
+.modal h2{font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:24px}
+.modal h2 .g{color:var(--gold)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px}
+.btn-cancel{background:transparent;color:var(--grey);padding:10px 22px;border-radius:7px;font-size:.85rem;font-weight:600;border:1px solid var(--border);cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.btn-cancel:hover{border-color:var(--white);color:var(--white)}
+.btn-submit{background:var(--gold);color:var(--navy);padding:10px 26px;border-radius:7px;font-size:.85rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.btn-submit:hover{background:var(--gold-2);transform:translateY(-1px)}
+.form-select{width:100%;background:var(--navy-card);border:1px solid var(--border);border-radius:9px;padding:12px 16px;color:var(--white);font-size:.9rem;font-family:'Syne','Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;appearance:none;cursor:pointer}
+.form-select:focus{border-color:var(--gold)}
+.form-select option{background:var(--navy-2)}
+.pw-gate{max-width:420px;text-align:center}
+.pw-gate h2{margin-bottom:10px}
+.pw-gate p{font-size:.87rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;margin-bottom:24px}
+.pw-err{color:var(--red);font-size:.8rem;margin-top:8px;min-height:20px}
+/* post view modal */
+.pv-cat{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.pv-title{font-family:'DM Serif Display',serif;font-size:1.7rem;margin-bottom:14px;line-height:1.25}
+.pv-meta{display:flex;gap:14px;font-size:.8rem;color:var(--grey);padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pv-body{font-size:.9rem;color:#a0b4c8;font-family:'Noto Sans KR',sans-serif;line-height:1.95;word-break:keep-all;margin-top:22px}
+.pv-body p{margin-bottom:14px}
+.pv-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:20px}
+.pv-gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:9px;cursor:pointer;border:1px solid var(--border);transition:opacity .2s,transform .2s}
+.pv-gallery img:hover{opacity:.85;transform:scale(1.02)}
+.pv-actions{display:flex;gap:8px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);justify-content:flex-end}
+.btn-edit{background:var(--navy-light);color:var(--grey);padding:8px 16px;border-radius:7px;font-size:.8rem;font-weight:600;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.btn-edit:hover{border-color:var(--gold);color:var(--gold)}
+.btn-del{background:rgba(214,52,71,.1);color:var(--red);padding:8px 16px;border-radius:7px;font-size:.8rem;font-weight:600;border:1px solid rgba(214,52,71,.3);cursor:pointer;transition:all .2s}
+.btn-del:hover{background:rgba(214,52,71,.2)}
+/* photo upload */
+.photo-drop{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.photo-drop:hover{border-color:var(--gold);background:var(--gold-dim)}
+.photo-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-drop-icon{font-size:1.8rem;margin-bottom:8px}
+.photo-drop-txt{font-size:.83rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif}
+.photo-drop-txt span{color:var(--gold);font-weight:700}
+.photo-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:12px}
+.pprev{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--navy-light);border:1px solid var(--border)}
+.pprev img{width:100%;height:100%;object-fit:cover;display:block}
+.pprev-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:.7rem;cursor:pointer;line-height:20px;text-align:center}
+.pprev-rm:hover{background:var(--red)}
+.photo-count{font-size:.75rem;color:var(--grey);margin-top:6px}
+/* LIGHTBOX */
+.lb{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.93);align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb img{max-width:90vw;max-height:88vh;border-radius:10px;object-fit:contain}
+.lb-x{position:absolute;top:18px;right:22px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer}
+.lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.6rem;width:48px;height:48px;border-radius:50%;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center}
+.lb-prev:hover,.lb-next:hover{background:rgba(232,168,0,.4)}
+.lb-prev{left:18px}.lb-next{right:18px}
+.lb-count{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:var(--grey);font-size:.8rem}
+/* FOOTER */
+footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 32px 32px}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
+.footer-logo{display:flex;align-items:center;gap:10px}
+.footer-logo span{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--gold)}
+.footer-copy{font-size:.75rem;color:var(--grey-2)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:.75rem;color:var(--grey-2);font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .hero-stats{position:relative;bottom:auto;right:auto;flex-wrap:wrap;margin-top:48px;border-top:1px solid var(--border)}
+  .hs-item{border-left:none;border-top:1px solid var(--border)}
+}
+@media(max-width:768px){
+  nav,.header-cta .btn-apply-header{display:none}
+  .hamburger{display:flex}
+  .form-row{grid-template-columns:1fr}
+  .research-grid,.events-grid{grid-template-columns:1fr}
+  .officers-grid{grid-template-columns:repeat(2,1fr)}
+  .members-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-inner{flex-direction:column;align-items:flex-start}
+  .hero-inner{padding:0 20px}
+  .section-wrap{padding:0 20px}
+}
+@media(max-width:480px){
+  .hero-btns{flex-direction:column}
+  .members-grid{grid-template-columns:repeat(2,1fr)}
+  .officers-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+<div class="header-inner">
+  <!-- LOGO: 실제 FINBASE 다이아몬드+화살표 로고 -->
+  <div class="logo" onclick="goto('home')">
+    <div class="logo-mark">
+      <img src="data:image/png;base64,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" alt="FINBASE Logo" style="width:100%;height:100%;object-fit:contain"/>
+    </div>
+    <span class="logo-text">FINBASE</span>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" id="nb-home" onclick="goto('home')" data-ko="홈" data-en="Home">홈</button>
+    <button class="nav-btn" id="nb-about" onclick="goto('about')" data-ko="소개" data-en="About Us">소개</button>
+    <button class="nav-btn" id="nb-people" onclick="goto('people')" data-ko="멤버" data-en="Our People">멤버</button>
+    <button class="nav-btn" id="nb-research" onclick="goto('research')" data-ko="리서치" data-en="Research">리서치</button>
+    <button class="nav-btn" id="nb-activity" onclick="goto('activity')" data-ko="활동" data-en="Activity">활동</button>
+    <button class="nav-btn" id="nb-contact" onclick="goto('contact')" data-ko="문의" data-en="Contact Us">문의</button>
+    <button class="nav-btn" id="nb-apply" onclick="goto('apply')" data-ko="지원" data-en="Apply">지원</button>
+  </nav>
+
+  <div class="header-cta">
+    <!-- 언어 토글 -->
+    <div class="lang-toggle">
+      <button class="lang-btn on" id="lang-ko" onclick="setLang('ko')">KO</button>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="btn-apply-header" onclick="goto('apply')" data-ko="지원하기" data-en="Apply Now">지원하기</button>
+  </div>
+
+  <div class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></div>
+</div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="toggleMob()">✕</button>
+  <!-- 모바일 언어 토글 -->
+  <div style="display:flex;gap:0;margin-bottom:24px;background:var(--navy-light);border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content">
+    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s" id="mob-lang-ko" class="on" onclick="setLang('ko')" style="background:var(--gold);color:var(--navy)">KO</button>
+    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s;background:none;color:var(--grey)" id="mob-lang-en" onclick="setLang('en')">EN</button>
+  </div>
+  <button class="mob-nav-btn" onclick="goto('home');toggleMob()" data-ko="홈" data-en="Home">홈</button>
+  <button class="mob-nav-btn" onclick="goto('about');toggleMob()" data-ko="소개" data-en="About Us">소개</button>
+  <button class="mob-nav-btn" onclick="goto('people');toggleMob()" data-ko="멤버" data-en="Our People">멤버</button>
+  <button class="mob-nav-btn" onclick="goto('research');toggleMob()" data-ko="리서치" data-en="Research">리서치</button>
+  <button class="mob-nav-btn" onclick="goto('activity');toggleMob()" data-ko="활동" data-en="Activity">활동</button>
+  <button class="mob-nav-btn" onclick="goto('contact');toggleMob()" data-ko="문의하기" data-en="Contact Us">문의하기</button>
+  <button class="mob-nav-btn" onclick="goto('apply');toggleMob()" data-ko="지원하기" data-en="Apply">지원하기</button>
+  <button class="mob-apply" onclick="goto('apply');toggleMob()" data-ko="지원하기 →" data-en="Apply Now →">지원하기 →</button>
+</div>
+
+<!-- TICKER -->
+<!-- ADMIN BAR -->
+<div class="admin-bar" id="adminBar">
+  <div class="admin-bar-badge">🔐 관리자 모드</div>
+  <div class="admin-bar-divider"></div>
+  <button class="admin-bar-btn" onclick="openWrite('research')">📄 리서치 업로드</button>
+  <button class="admin-bar-btn" onclick="openWrite('weekly')">📚 주차 활동 등록</button>
+  <button class="admin-bar-btn" onclick="openWrite('event')">🎉 이벤트 포스팅</button>
+  <div class="admin-bar-right">
+    <button class="admin-bar-btn red" onclick="adminLogout()">🔓 로그아웃</button>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-ov" id="confirmModal">
+<div class="modal confirm-modal">
+  <div class="confirm-icon" id="confirmIcon">🗑</div>
+  <h2 id="confirmTitle">정말 삭제할까요?</h2>
+  <p id="confirmDesc">이 작업은 되돌릴 수 없습니다.</p>
+  <div class="form-actions">
+    <button class="btn-cancel" onclick="closeM('confirmModal')">취소</button>
+    <button class="btn-submit" id="confirmOkBtn" style="background:var(--red)" onclick="confirmAction()">삭제</button>
+  </div>
+</div>
+</div>
+
+<div class="ticker-wrap" id="tickerWrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">B테크, 코스닥 상장 예비심사 통과</span>
+    <span class="ticker-item">C자산운용, 500억 규모 메자닌 펀드 조성</span>
+    <span class="ticker-item">D은행, 혁신금융서비스 지정</span>
+    <span class="ticker-item">E바이오, 1000억 프리IPO 투자 유치</span>
+    <span class="ticker-item">F증권, 2026 하반기 IB부문 채용 공고</span>
+    <span class="ticker-item">G캐피탈, 부동산 PF 구조조정 착수</span>
+    <span class="ticker-item">B테크, 코스닥 상장 예비심사 통과</span>
+    <span class="ticker-item">C자산운용, 500억 규모 메자닌 펀드 조성</span>
+    <span class="ticker-item">D은행, 혁신금융서비스 지정</span>
+    <span class="ticker-item">E바이오, 1000억 프리IPO 투자 유치</span>
+    <span class="ticker-item">F증권, 2026 하반기 IB부문 채용 공고</span>
+    <span class="ticker-item">G캐피탈, 부동산 PF 구조조정 착수</span>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: HOME ══════════ -->
+<div id="page-home" class="page active">
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-label">Your Base for Finance</div>
+    <h1 class="hero-h">
+      Explore the<br>World of<br><em>Finance.</em>
+    </h1>
+    <p class="hero-desc">여의도 및 글로벌 금융 현장과 가장 가까운 학회.<br>M&A, IPO, Real Estate PF를 직접 연구하고<br>금융 커리어의 첫 발을 내딛으세요.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="goto('about')">FINBASE 알아보기</button>
+      <button class="btn-ghost" onclick="goto('apply')">지원하기 →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hs-item"><div class="hs-num">50<sup style="font-size:1.2rem">+</sup></div><div class="hs-label">멤버</div></div>
+      <div class="hs-item"><div class="hs-num">4</div><div class="hs-label">부서</div></div>
+      <div class="hs-item"><div class="hs-num">20<sup style="font-size:1.2rem">+</sup></div><div class="hs-label">리포트</div></div>
+      <div class="hs-item"><div class="hs-num">3</div><div class="hs-label">기수</div></div>
+    </div>
+  </div>
+  <div class="scroll-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>SCROLL</div>
+</section>
+</div>
+
+<!-- ══════════ PAGE: ABOUT ══════════ -->
+<div id="page-about" class="page">
+<div class="about-hero">
+  <div class="about-hero-inner">
+    <div class="eyebrow fu" id="about-eyebrow-el">About FINBASE</div>
+    <h1 class="section-h fu fd1" id="about-h1-el" style="font-size:clamp(2.2rem,5vw,4rem)">금융의 <span class="g">베이스캠프</span></h1>
+    <p class="section-p fu fd2" id="about-sub-el" style="max-width:560px;margin:0 auto">실무 금융인과 협력하며 실제 딜을 다루는 대학 금융 학회</p>
+  </div>
+</div>
+<div class="about-intro">
+  <div class="about-grid">
+    <div class="about-text">
+      <div class="eyebrow fu" id="mission-eyebrow-el">Our Mission</div>
+      <h2 class="section-h fu fd1" id="mission-h-el">우리가 <span class="g">만드는</span><br>금융 커리어</h2>
+      <div class="divider-line fu fd2"></div>
+      <p class="section-p fu fd2" id="mission-p1-el">FINBASE는 단순한 스터디 그룹이 아닙니다. 여의도 IB, 자산운용사 현직자와 함께 실제 딜을 분석하고, 직접 리서치 레포트를 발행하며, 금융 커리어에 필요한 실전 역량을 키우는 공간입니다.</p>
+      <p class="section-p fu fd3" id="mission-p2-el" style="margin-top:16px">우리는 M&A, IPO, 부동산 PF 등 실물 금융 전반을 다루며, 학술적 깊이와 실무 감각을 동시에 추구합니다.</p>
+      <div class="about-values fu fd3">
+        <div class="val-card"><div class="val-icon">💼</div><div class="val-title" id="val1-t-el">Real Deal Study</div><div class="val-desc" id="val1-d-el">실제 거래 케이스 기반 학습</div></div>
+        <div class="val-card"><div class="val-icon">🧠</div><div class="val-title" id="val2-t-el">Expert Network</div><div class="val-desc" id="val2-d-el">여의도 현직자 멘토링</div></div>
+        <div class="val-card"><div class="val-icon">📊</div><div class="val-title" id="val3-t-el">Research Pub</div><div class="val-desc" id="val3-d-el">리서치 레포트 공식 발행</div></div>
+        <div class="val-card"><div class="val-icon">🏆</div><div class="val-title" id="val4-t-el">Competition</div><div class="val-desc" id="val4-d-el">금융 공모전 팀 지원</div></div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="stat-big fu"><div class="stat-big-num">1기</div><div class="stat-big-label" id="stat-big-label-el">2026년 봄학기 시작 · 현재 운영 중</div></div>
+      <div class="stat-row">
+        <div class="stat-sm fu fd1"><div class="stat-sm-num">50+</div><div class="stat-sm-label">Active Members</div></div>
+        <div class="stat-sm fu fd2"><div class="stat-sm-num">4</div><div class="stat-sm-label">Departments</div></div>
+      </div>
+      <div class="val-card fu fd3" style="padding:28px">
+        <div class="val-icon">🏢</div>
+        <div class="val-title" id="dept-title-el" style="font-size:.95rem;margin-bottom:10px">4개 팀 구성</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div id="dept-1-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">📈 리서치 1팀 — Capital Markets & Real Estate PF</div>
+          <div id="dept-2-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">💹 리서치 2팀 — Corporate M&A & IPO</div>
+          <div id="dept-3-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🌐 콘텐츠/홍보팀 — Insight Publishing</div>
+          <div id="dept-4-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🤝 이벤트 기획팀 — Networking & Events</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="officers-section">
+  <div class="section-wrap">
+    <div class="eyebrow fu" id="officer-eyebrow-el">Leadership</div>
+    <h2 class="section-h fu fd1" id="officer-h-el">임원진 <span class="g">소개</span></h2>
+    <div class="divider-line fu fd2"></div>
+    <div class="officers-grid" id="officersGrid"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PAGE: PEOPLE ══════════ -->
+<div id="page-people" class="page">
+<div class="people-hero">
+  <div class="people-hero-inner">
+    <div class="eyebrow fu" id="people-eyebrow-el">Our People</div>
+    <h1 class="section-h fu fd1" id="people-h1-el" style="font-size:clamp(2.2rem,5vw,4rem)">FINBASE의 <span class="g">모든 멤버</span></h1>
+    <p class="section-p fu fd2" id="people-sub-el" style="max-width:480px;margin:0 auto">함께 금융을 공부하고 성장하는 FINBASE 1기 멤버들입니다.</p>
+  </div>
+</div>
+<div class="org-section">
+  <div class="section-wrap">
+    <div class="eyebrow fu" id="org-eyebrow-el">Organization</div>
+    <h2 class="section-h fu fd1" id="org-h-el">조직도 <span class="g">Chart</span></h2>
+    <div class="divider-line fu fd2"></div>
+    <div class="org-chart fu fd2" id="orgChart"></div>
+  </div>
+</div>
+<div class="members-section">
+  <div class="section-wrap">
+    <div class="eyebrow fu" id="mem-eyebrow-el">All Members</div>
+    <h2 class="section-h fu fd1" id="mem-h-el">전체 <span class="g">멤버</span></h2>
+    <div class="divider-line fu fd2"></div>
+    <div id="membersList"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PAGE: RESEARCH ══════════ -->
+<div id="page-research" class="page">
+<div class="research-hero">
+  <div class="research-hero-inner">
+    <div class="eyebrow fu" id="res-eyebrow-el">Research</div>
+    <h1 class="section-h fu fd1" id="res-h1-el" style="font-size:clamp(2.2rem,5vw,4rem)">FINBASE <span class="g">Research</span></h1>
+    <p class="section-p fu fd2" id="res-sub-el" style="max-width:500px;margin:0 auto">팀이 직접 작성한 금융 리서치 레포트를 발행합니다</p>
+  </div>
+</div>
+<div class="research-main">
+  <div class="section-wrap">
+    <div class="research-filter fu" id="researchFilter">
+      <button class="filter-pill on" onclick="filterRes('all',this)">전체</button>
+      <button class="filter-pill" onclick="filterRes('리서치1팀',this)">리서치 1팀</button>
+      <button class="filter-pill" onclick="filterRes('리서치2팀',this)">리서치 2팀</button>
+      <button class="filter-pill" onclick="filterRes('콘텐츠팀',this)">콘텐츠팀</button>
+    </div>
+    <div class="research-grid" id="researchGrid"></div>
+    <div class="empty-box" id="researchEmpty" style="display:none"><div class="empty-icon">📄</div><h3>아직 등록된 리서치가 없습니다</h3><p>관리자가 리서치를 등록하면 여기에 표시됩니다.</p></div>
+    <div class="pagination" id="resPagination"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PAGE: ACTIVITY ══════════ -->
+<div id="page-activity" class="page">
+<div class="act-hero">
+  <div class="act-hero-inner">
+    <div class="eyebrow fu" id="act-eyebrow-el">Activity Archive</div>
+    <h1 class="section-h fu fd1" id="act-h1-el" style="font-size:clamp(2.2rem,5vw,4rem)">OUR <span class="g">ACTIVITY</span></h1>
+    <p class="section-p fu fd2" id="act-sub-el" style="max-width:500px;margin:0 auto">FINBASE의 모든 활동을 기록합니다</p>
+  </div>
+</div>
+<div class="activity-main">
+  <div class="section-wrap">
+    <div class="act-tabs">
+      <button class="act-tab on" id="act-tab1-el" onclick="actTab('weekly',this)">📚 주차별 활동</button>
+      <button class="act-tab" id="act-tab2-el" onclick="actTab('events',this)">🎉 이벤트 & 블로그</button>
+    </div>
+    <!-- Weekly -->
+    <div class="act-pane on" id="pane-weekly">
+      <div class="week-filter">
+        <button class="filter-pill on" onclick="wkFilter('all',this)">전체</button>
+        <button class="filter-pill" onclick="wkFilter('전체세션',this)">전체 세션</button>
+        <button class="filter-pill" onclick="wkFilter('리서치1팀',this)">리서치 1팀</button>
+        <button class="filter-pill" onclick="wkFilter('리서치2팀',this)">리서치 2팀</button>
+        <button class="filter-pill" onclick="wkFilter('콘텐츠팀',this)">콘텐츠팀</button>
+      </div>
+      <div class="week-list" id="weekList"></div>
+      <div class="empty-box" id="weekEmpty" style="display:none"><div class="empty-icon">📂</div><h3>등록된 세션이 없습니다</h3><p>관리자가 세션을 등록하면 여기에 표시됩니다.</p></div>
+      <div class="pagination" id="weekPag"></div>
+    </div>
+    <!-- Events -->
+    <div class="act-pane" id="pane-events">
+      <div class="week-filter">
+        <button class="filter-pill on" onclick="evFilter('all',this)">전체</button>
+        <button class="filter-pill" onclick="evFilter('세미나',this)">세미나</button>
+        <button class="filter-pill" onclick="evFilter('이벤트',this)">이벤트</button>
+        <button class="filter-pill" onclick="evFilter('기타',this)">기타</button>
+      </div>
+      <div class="events-grid" id="eventsGrid"></div>
+      <div class="empty-box" id="evEmpty" style="display:none"><div class="empty-icon">🎉</div><h3>등록된 이벤트가 없습니다</h3><p>관리자가 이벤트를 등록하면 여기에 표시됩니다.</p></div>
+      <div class="pagination" id="evPag"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PAGE: CONTACT ══════════ -->
+<div id="page-contact" class="page">
+<div class="contact-wrap">
+  <div class="contact-inner">
+    <div class="eyebrow fu" id="contact-eyebrow-el">Get In Touch</div>
+    <h1 class="section-h fu fd1" id="contact-h1-el" style="font-size:clamp(2rem,4vw,3.5rem)">Contact <span class="g">Us</span></h1>
+    <div class="divider-line fu fd2"></div>
+    <div class="contact-grid">
+      <div>
+        <a class="contact-info-item fu" href="mailto:finbase@example.com" style="text-decoration:none">
+          <div class="ci-icon">✉️</div>
+          <div class="ci-text"><h4>Email</h4><p>finbase@gm.gist.ac.kr</p><span id="contact-email-sub-el">학회 공식 이메일로 문의해주세요</span></div>
+        </a>
+        <a class="contact-info-item fu fd1" href="https://www.instagram.com/finbase_/" target="_blank" style="text-decoration:none">
+          <div class="ci-icon">📸</div>
+          <div class="ci-text"><h4>Instagram</h4><p>@finbase_</p><span id="contact-ig-sub-el">최신 활동 및 소식을 팔로우하세요</span></div>
+        </a>
+        <div class="contact-info-item fu fd2" style="cursor:default">
+          <div class="ci-icon">📍</div>
+          <div class="ci-text"><h4>Location</h4><p>George Mason Korea</p><span id="contact-loc-sub-el">인천 연수구 송도동</span></div>
+        </div>
+      </div>
+      <div class="contact-form-side fu fd1">
+        <h3 id="contact-form-h-el">메시지 <span style="color:var(--gold)">보내기</span></h3>
+        <p id="contact-form-p-el">궁금한 점이 있으시면 언제든지 연락주세요.</p>
+        <div class="form-g"><label class="form-label" id="form-name-lbl-el">이름</label><input id="form-name-inp" class="form-input" type="text" placeholder="이름을 입력하세요"></div>
+        <div class="form-g"><label class="form-label" id="form-email-lbl-el">이메일</label><input id="form-email-inp" class="form-input" type="email" placeholder="이메일을 입력하세요"></div>
+        <div class="form-g"><label class="form-label" id="form-msg-lbl-el">메시지</label><textarea id="form-msg-inp" class="form-ta" placeholder="문의 내용을 입력해주세요..."></textarea></div>
+        <button class="btn-gold" id="contact-btn-el" style="width:100%">메시지 보내기</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PAGE: APPLY ══════════ -->
+<div id="page-apply" class="page">
+<div class="apply-wrap">
+  <div class="apply-inner">
+    <div class="apply-badge">2026 Spring — Closed</div>
+    <h1 class="apply-h" id="apply-h1-el">FINBASE에<br><span class="g">지원하기</span></h1>
+    <p class="apply-desc" id="apply-desc-el">FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.</p>
+    <div class="apply-closed-box">
+      <div class="apply-closed-icon">🔒</div>
+      <div class="apply-closed-title" id="apply-closed-t-el">2026년 봄학기 모집 마감</div>
+      <div class="apply-closed-desc" id="apply-closed-d-el" style="margin-top:10px">현재 2026년 봄학기 지원이 마감되었습니다.<br>다음 모집은 2026년 가을학기에 진행될 예정입니다.<br>인스타그램 팔로우를 통해 모집 공고를 받아보세요.</div>
+    </div>
+    <div class="apply-next-box">
+      <div class="anb-icon">📅</div>
+      <div class="anb-text">
+        <h4 id="apply-next-h-el">다음 모집 예정</h4>
+        <p id="apply-next-p-el">2026년 가을학기 모집이 예정되어 있습니다. Instagram <strong>@finbase_</strong> 을 팔로우하면 모집 공고를 가장 빠르게 받아볼 수 있습니다.</p>
+      </div>
+    </div>
+    <button class="btn-ghost" id="apply-contact-btn-el" style="margin-top:28px" onclick="goto('contact')">문의하기 →</button>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+<div class="footer-inner">
+  <div class="footer-logo">
+    <img src="data:image/png;base64,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" alt="FINBASE" style="width:62px;height:26px;object-fit:contain"/>
+    <span>FINBASE</span>
+  </div>
+  <div class="footer-copy">© 2026 FINBASE Academic Club. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/finbase_/" target="_blank">Instagram</a>
+    <a onclick="goto('contact')">Contact</a>
+    <a onclick="goto('apply')">Apply</a>
+  </div>
+</div>
+</footer>
+
+<!-- ADMIN FAB -->
+<button class="admin-fab" id="adminFab" onclick="openPw()" title="관리자 글쓰기">✏</button>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" onclick="if(event.target===this)closeLb()">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-prev" onclick="lbPrev()">‹</button>
+  <img id="lbImg" src="" alt=""/>
+  <button class="lb-next" onclick="lbNext()">›</button>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+<!-- ══ PW MODAL ══ -->
+<div class="modal-ov" id="pwModal">
+<div class="modal pw-gate" style="max-width:400px;text-align:center">
+  <button class="modal-x" onclick="closeM('pwModal')">✕</button>
+  <div style="width:56px;height:56px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 18px">🔐</div>
+  <h2 style="margin-bottom:6px">관리자 <span class="g">인증</span></h2>
+  <p style="font-size:.85rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;margin-bottom:24px">비밀번호를 입력해 관리자 모드로 전환합니다</p>
+  <div class="form-g" style="text-align:left">
+    <label class="form-label">비밀번호</label>
+    <input class="form-input" type="password" id="pwIn" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkPw()" style="text-align:center;letter-spacing:.2em;font-size:1rem"/>
+  </div>
+  <div class="pw-err" id="pwErr"></div>
+  <div class="form-actions" style="justify-content:stretch;margin-top:20px">
+    <button class="btn-cancel" onclick="closeM('pwModal')" style="flex:1">취소</button>
+    <button class="btn-submit" onclick="checkPw()" style="flex:2">관리자 모드 진입 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ WRITE CHOICE MODAL ══ -->
+<div class="modal-ov" id="writeChoiceModal">
+<div class="modal pw-gate" style="max-width:440px">
+  <button class="modal-x" onclick="closeM('writeChoiceModal')">✕</button>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <div style="width:36px;height:36px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">✏</div>
+    <div>
+      <h2 style="margin-bottom:2px;font-size:1.25rem">무엇을 <span class="g">작성</span>할까요?</h2>
+      <p style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">관리자 모드 · 콘텐츠를 등록하세요</p>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <button onclick="openWrite('research')" class="write-choice-btn">
+      <span style="font-size:1.3rem">📄</span>
+      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">리서치 업로드</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">리서치 레포트 · 팀별 분류 · PDF 링크 첨부</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+    </button>
+    <button onclick="openWrite('weekly')" class="write-choice-btn">
+      <span style="font-size:1.3rem">📚</span>
+      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">주차별 활동 등록</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">세션 아카이빙 · 사진 최대 10장 · 자료 링크</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+    </button>
+    <button onclick="openWrite('event')" class="write-choice-btn">
+      <span style="font-size:1.3rem">🎉</span>
+      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">이벤트 & 블로그 포스팅</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">이벤트 후기 · 세미나 리뷰 · 사진 첨부</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- ══ RESEARCH WRITE MODAL ══ -->
+<div class="modal-ov" id="resModal">
+<div class="modal">
+  <button class="modal-x" onclick="closeM('resModal')">✕</button>
+  <h2 id="resMTitle">📄 리서치 <span class="g">업로드</span></h2>
+  <div class="form-g"><label class="form-label">제목</label><input class="form-input" type="text" id="rm-title" placeholder="리서치 레포트 제목"/></div>
+  <div class="form-row">
+    <div class="form-g"><label class="form-label">팀</label><select class="form-select" id="rm-team"><option value="리서치1팀">리서치 1팀</option><option value="리서치2팀">리서치 2팀</option><option value="콘텐츠팀">콘텐츠팀</option></select></div>
+    <div class="form-g"><label class="form-label">날짜</label><input class="form-input" type="date" id="rm-date"/></div>
+  </div>
+  <div class="form-g"><label class="form-label">요약</label><input class="form-input" type="text" id="rm-excerpt" placeholder="한 줄 요약"/></div>
+  <div class="form-g"><label class="form-label">내용</label><textarea class="form-ta" id="rm-content" placeholder="리서치 내용을 작성하세요..."></textarea></div>
+  <div class="form-g"><label class="form-label">PDF / 자료 링크 (선택)</label><input class="form-input" type="text" id="rm-link" placeholder="https://drive.google.com/..."/></div>
+  <div class="form-actions"><button class="btn-cancel" onclick="closeM('resModal')">취소</button><button class="btn-submit" id="resSubmitBtn" onclick="submitRes()">업로드</button></div>
+</div>
+</div>
+
+<!-- ══ RESEARCH VIEW MODAL ══ -->
+<div class="modal-ov" id="resViewModal">
+<div class="modal" style="max-width:680px">
+  <button class="modal-x" onclick="closeM('resViewModal')">✕</button>
+  <div class="pv-cat" id="rv-team"></div>
+  <div class="pv-title" id="rv-title"></div>
+  <div class="pv-meta"><span id="rv-date"></span></div>
+  <div class="pv-body" id="rv-body"></div>
+  <div class="pv-actions" id="rv-actions"></div>
+</div>
+</div>
+
+<!-- ══ WEEK WRITE MODAL ══ -->
+<div class="modal-ov" id="wkModal">
+<div class="modal" style="max-width:680px">
+  <button class="modal-x" onclick="closeM('wkModal')">✕</button>
+  <h2 id="wkMTitle">📚 주차 활동 <span class="g">등록</span></h2>
+  <div class="form-row">
+    <div class="form-g"><label class="form-label">주차</label><input class="form-input" type="text" id="wm-num" placeholder="예: 1기 1주차"/></div>
+    <div class="form-g"><label class="form-label">날짜</label><input class="form-input" type="date" id="wm-date"/></div>
+  </div>
+  <div class="form-g"><label class="form-label">활동 제목</label><input class="form-input" type="text" id="wm-title" placeholder="예: IPO 밸류에이션 발표"/></div>
+  <div class="form-row">
+    <div class="form-g"><label class="form-label">팀</label><select class="form-select" id="wm-team"><option value="전체세션">전체 세션</option><option value="리서치1팀">리서치 1팀</option><option value="리서치2팀">리서치 2팀</option><option value="콘텐츠팀">콘텐츠팀</option><option value="이벤트팀">이벤트 기획팀</option></select></div>
+    <div class="form-g"><label class="form-label">발표자</label><input class="form-input" type="text" id="wm-presenter" placeholder="예: 홍길동"/></div>
+  </div>
+  <div class="form-g"><label class="form-label">활동 내용</label><textarea class="form-ta" id="wm-content" placeholder="이번 세션에서 다룬 내용을 작성하세요."></textarea></div>
+  <div class="form-g"><label class="form-label">사진 (최대 10장)</label>
+    <div class="photo-drop" id="wkDrop"><input type="file" id="wm-photos" accept="image/*" multiple onchange="handleWkPhotos(event)"/><div class="photo-drop-icon">📷</div><div class="photo-drop-txt">클릭 또는 드래그 · <span>JPG PNG GIF WEBP</span></div></div>
+    <div class="photo-preview-grid" id="wkPrevGrid"></div><div class="photo-count" id="wkPrevCount"></div>
+  </div>
+  <div class="form-g"><label class="form-label">자료 링크 (쉼표 구분)</label><input class="form-input" type="text" id="wm-links" placeholder="https://..."/></div>
+  <div class="form-g"><label class="form-label">태그 (쉼표 구분)</label><input class="form-input" type="text" id="wm-tags" placeholder="IPO, 밸류에이션"/></div>
+  <div class="form-actions"><button class="btn-cancel" onclick="closeM('wkModal')">취소</button><button class="btn-submit" id="wkSubmitBtn" onclick="submitWk()">등록</button></div>
+</div>
+</div>
+
+<!-- ══ EVENT WRITE MODAL ══ -->
+<div class="modal-ov" id="evModal">
+<div class="modal">
+  <button class="modal-x" onclick="closeM('evModal')">✕</button>
+  <h2 id="evMTitle">🎉 이벤트 <span class="g">포스팅</span></h2>
+  <div class="form-g"><label class="form-label">제목</label><input class="form-input" type="text" id="em-title" placeholder="이벤트 제목"/></div>
+  <div class="form-row">
+    <div class="form-g"><label class="form-label">카테고리</label><select class="form-select" id="em-cat"><option value="세미나">세미나</option><option value="이벤트">이벤트</option><option value="기타">기타</option></select></div>
+    <div class="form-g"><label class="form-label">날짜</label><input class="form-input" type="date" id="em-date"/></div>
+  </div>
+  <div class="form-g"><label class="form-label">작성자</label><input class="form-input" type="text" id="em-author" placeholder="예: 콘텐츠팀"/></div>
+  <div class="form-g"><label class="form-label">요약</label><input class="form-input" type="text" id="em-excerpt" placeholder="한 줄 설명"/></div>
+  <div class="form-g"><label class="form-label">본문</label><textarea class="form-ta" id="em-content" style="min-height:160px" placeholder="이벤트 내용을 자유롭게 작성하세요."></textarea></div>
+  <div class="form-g"><label class="form-label">사진 (최대 10장)</label>
+    <div class="photo-drop" id="evDrop"><input type="file" id="em-photos" accept="image/*" multiple onchange="handleEvPhotos(event)"/><div class="photo-drop-icon">📷</div><div class="photo-drop-txt">클릭 또는 드래그 · <span>JPG PNG GIF WEBP</span></div></div>
+    <div class="photo-preview-grid" id="evPrevGrid"></div><div class="photo-count" id="evPrevCount"></div>
+  </div>
+  <div class="form-actions"><button class="btn-cancel" onclick="closeM('evModal')">취소</button><button class="btn-submit" id="evSubmitBtn" onclick="submitEv()">포스팅</button></div>
+</div>
+</div>
+
+<!-- ══ EVENT VIEW MODAL ══ -->
+<div class="modal-ov" id="evViewModal">
+<div class="modal" style="max-width:680px">
+  <button class="modal-x" onclick="closeM('evViewModal')">✕</button>
+  <div class="pv-cat" id="vv-cat"></div>
+  <div class="pv-title" id="vv-title"></div>
+  <div class="pv-meta"><span id="vv-date"></span><span>·</span><span id="vv-author"></span></div>
+  <div class="pv-body" id="vv-body"></div>
+  <div class="pv-actions" id="vv-actions"></div>
+</div>
+</div>
+
+<script>
+/* ══════════ CONSTANTS ══════════ */
+const ADMIN_PW='finbase2026';
+const PAGES=['home','about','people','research','activity','contact','apply'];
+
+/* ══════════ LANGUAGE SYSTEM ══════════ */
+let currentLang = localStorage.getItem('fb_lang') || 'ko';
+
+const LANG = {
+  // NAV
+  'nb-home':      {ko:'홈',       en:'Home'},
+  'nb-about':     {ko:'소개',     en:'About Us'},
+  'nb-people':    {ko:'멤버',     en:'Our People'},
+  'nb-research':  {ko:'리서치',   en:'Research'},
+  'nb-activity':  {ko:'활동',     en:'Activity'},
+  'nb-contact':   {ko:'문의',     en:'Contact Us'},
+  'nb-apply':     {ko:'지원',     en:'Apply'},
+  // BTN
+  'apply-cta':    {ko:'지원하기', en:'Apply Now'},
+  // HOME
+  'hero-label':   {ko:'Your Base for Finance', en:'Your Base for Finance'},
+  'hero-h1':      {ko:'금융의 세계를\n탐험하세요.\n<em>Finance.</em>', en:'Explore the\nWorld of\n<em>Finance.</em>'},
+  'hero-desc':    {ko:'여의도 및 글로벌 금융 현장과 가장 가까운 학회.<br>M&A, IPO, Real Estate PF를 직접 연구하고<br>금융 커리어의 첫 발을 내딛으세요.', en:'The academic club closest to the real world of finance.<br>Research M&A, IPO, Real Estate PF firsthand<br>and take your first step toward a finance career.'},
+  'hero-btn1':    {ko:'FINBASE 알아보기', en:'DISCOVER FINBASE'},
+  'hero-btn2':    {ko:'지원하기 →', en:'Apply Now →'},
+  'hs-label-1':   {ko:'멤버', en:'Members'},
+  'hs-label-2':   {ko:'부서', en:'Departments'},
+  'hs-label-3':   {ko:'리포트', en:'Reports'},
+  'hs-label-4':   {ko:'기수', en:'Cohorts'},
+  // ABOUT
+  'about-eyebrow':  {ko:'About FINBASE', en:'About FINBASE'},
+  'about-h1':       {ko:'금융의 <span class="g">베이스캠프</span>', en:'Your Base for <span class="g">Finance</span>'},
+  'about-sub':      {ko:'실무 금융인과 협력하며 실제 딜을 다루는 대학 금융 학회', en:'A university finance club working alongside industry professionals on real deals'},
+  'mission-eyebrow':{ko:'Our Mission', en:'Our Mission'},
+  'mission-h':      {ko:'우리가 <span class="g">만드는</span><br>금융 커리어', en:'Building Your<br><span class="g">Finance</span> Career'},
+  'mission-p1':     {ko:'FINBASE는 단순한 스터디 그룹이 아닙니다. 여의도 IB, 자산운용사 현직자와 함께 실제 딜을 분석하고, 직접 리서치 레포트를 발행하며, 금융 커리어에 필요한 실전 역량을 키우는 공간입니다.', en:'FINBASE is more than a study group. We analyze real deals with IB and asset management professionals, publish research reports, and build the practical skills needed for a finance career.'},
+  'mission-p2':     {ko:'우리는 M&A, IPO, 부동산 PF 등 실물 금융 전반을 다루며, 학술적 깊이와 실무 감각을 동시에 추구합니다.', en:'We cover M&A, IPO, Real Estate PF and more — pursuing both academic depth and real-world intuition.'},
+  'val1-t':         {ko:'Real Deal Study', en:'Real Deal Study'},
+  'val1-d':         {ko:'실제 거래 케이스 기반 학습', en:'Case-based learning from real transactions'},
+  'val2-t':         {ko:'Expert Network', en:'Expert Network'},
+  'val2-d':         {ko:'여의도 현직자 멘토링', en:'Mentorship from Yeouido professionals'},
+  'val3-t':         {ko:'Research Pub', en:'Research Pub'},
+  'val3-d':         {ko:'리서치 레포트 공식 발행', en:'Official research report publication'},
+  'val4-t':         {ko:'Competition', en:'Competition'},
+  'val4-d':         {ko:'금융 공모전 팀 지원', en:'Finance competition team support'},
+  'stat-big-label': {ko:'2026년 봄학기 시작 · 현재 운영 중', en:'Started Spring 2026 · Currently Active'},
+  'dept-title':     {ko:'4개 팀 구성', en:'4 Departments'},
+  'dept-1':         {ko:'📈 리서치 1팀 — Capital Markets & Real Estate PF', en:'📈 Research Team 1 — Capital Markets & Real Estate PF'},
+  'dept-2':         {ko:'💹 리서치 2팀 — Corporate M&A & IPO', en:'💹 Research Team 2 — Corporate M&A & IPO'},
+  'dept-3':         {ko:'🌐 콘텐츠/홍보팀 — Insight Publishing', en:'🌐 Content/PR Team — Insight Publishing'},
+  'dept-4':         {ko:'🤝 이벤트 기획팀 — Networking & Events', en:'🤝 Events Team — Networking & Events'},
+  'officer-eyebrow':{ko:'Leadership', en:'Leadership'},
+  'officer-h':      {ko:'임원진 <span class="g">소개</span>', en:'Meet the <span class="g">Leadership</span>'},
+  // PEOPLE
+  'people-eyebrow': {ko:'Our People', en:'Our People'},
+  'people-h1':      {ko:'FINBASE의 <span class="g">모든 멤버</span>', en:'All <span class="g">Members</span>'},
+  'people-sub':     {ko:'함께 금융을 공부하고 성장하는 FINBASE 1기 멤버들입니다.', en:'FINBASE 1st cohort members studying and growing together in finance.'},
+  'org-eyebrow':    {ko:'Organization', en:'Organization'},
+  'org-h':          {ko:'조직도 <span class="g">Chart</span>', en:'Org <span class="g">Chart</span>'},
+  'mem-eyebrow':    {ko:'All Members', en:'All Members'},
+  'mem-h':          {ko:'전체 <span class="g">멤버</span>', en:'Full <span class="g">Roster</span>'},
+  // RESEARCH
+  'res-eyebrow':    {ko:'Research', en:'Research'},
+  'res-h1':         {ko:'FINBASE <span class="g">Research</span>', en:'FINBASE <span class="g">Research</span>'},
+  'res-sub':        {ko:'팀이 직접 작성한 금융 리서치 레포트를 발행합니다', en:'Finance research reports authored directly by our teams'},
+  // ACTIVITY
+  'act-eyebrow':    {ko:'Activity Archive', en:'Activity Archive'},
+  'act-h1':         {ko:'OUR <span class="g">ACTIVITY</span>', en:'OUR <span class="g">ACTIVITY</span>'},
+  'act-sub':        {ko:'FINBASE의 모든 활동을 기록합니다', en:'A record of all FINBASE activities'},
+  'act-tab1':       {ko:'📚 주차별 활동', en:'📚 Weekly Sessions'},
+  'act-tab2':       {ko:'🎉 이벤트 & 블로그', en:'🎉 Events & Blog'},
+  // CONTACT
+  'contact-eyebrow':{ko:'Get In Touch', en:'Get In Touch'},
+  'contact-h1':     {ko:'Contact <span class="g">Us</span>', en:'Contact <span class="g">Us</span>'},
+  'contact-email-sub':{ko:'학회 공식 이메일로 문의해주세요', en:'Reach out via our official email'},
+  'contact-ig-sub': {ko:'최신 활동 및 소식을 팔로우하세요', en:'Follow us for latest updates'},
+  'contact-loc-sub':{ko:'인천 연수구 송도동', en:'Songdo, Yeonsu-gu, Incheon'},
+  'contact-form-h': {ko:'메시지 <span style="color:var(--gold)">보내기</span>', en:'Send a <span style="color:var(--gold)">Message</span>'},
+  'contact-form-p': {ko:'궁금한 점이 있으시면 언제든지 연락주세요.', en:'Feel free to reach out anytime.'},
+  'form-name-lbl':  {ko:'이름', en:'Name'},
+  'form-email-lbl': {ko:'이메일', en:'Email'},
+  'form-msg-lbl':   {ko:'메시지', en:'Message'},
+  'form-name-ph':   {ko:'이름을 입력하세요', en:'Your Name'},
+  'form-email-ph':  {ko:'이메일을 입력하세요', en:'your@email.com'},
+  'form-msg-ph':    {ko:'문의 내용을 입력해주세요...', en:'Write your message here...'},
+  'contact-btn':    {ko:'메시지 보내기', en:'Send Message'},
+  // APPLY
+  'apply-h1':       {ko:'FINBASE에<br><span class="g">지원하기</span>', en:'Join<br><span class="g">FINBASE</span>'},
+  'apply-desc':     {ko:'FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.', en:'FINBASE welcomes any student with a serious interest in finance.<br>Applications open every semester.'},
+  'apply-closed-t': {ko:'2026년 봄학기 모집 마감', en:'Spring 2026 Applications Closed'},
+  'apply-closed-d': {ko:'현재 2026년 봄학기 지원이 마감되었습니다.<br>다음 모집은 2026년 가을학기에 진행될 예정입니다.<br>인스타그램 팔로우를 통해 모집 공고를 받아보세요.', en:'Applications for Spring 2026 are now closed.<br>The next recruitment will be for Fall 2026.<br>Follow us on Instagram to stay updated.'},
+  'apply-next-h':   {ko:'다음 모집 예정', en:'Next Recruitment'},
+  'apply-next-p':   {ko:'2026년 가을학기 모집이 예정되어 있습니다. Instagram <strong>@finbase_</strong> 을 팔로우하면 모집 공고를 가장 빠르게 받아볼 수 있습니다.', en:'Fall 2026 recruitment is coming. Follow <strong>@finbase_</strong> on Instagram to get notified first.'},
+  'apply-contact-btn':{ko:'문의하기 →', en:'Contact Us →'},
+  // FOOTER
+  'footer-copy':    {ko:'© 2026 FINBASE Academic Club. All rights reserved.', en:'© 2026 FINBASE Academic Club. All rights reserved.'},
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('fb_lang', lang);
+
+  // 데스크탑 토글 버튼
+  document.getElementById('lang-ko').classList.toggle('on', lang==='ko');
+  document.getElementById('lang-en').classList.toggle('on', lang==='en');
+
+  // 모바일 토글 버튼 스타일
+  const mobKo = document.getElementById('mob-lang-ko');
+  const mobEn = document.getElementById('mob-lang-en');
+  if(mobKo && mobEn){
+    mobKo.style.background = lang==='ko' ? 'var(--gold)' : 'none';
+    mobKo.style.color = lang==='ko' ? 'var(--navy)' : 'var(--grey)';
+    mobEn.style.background = lang==='en' ? 'var(--gold)' : 'none';
+    mobEn.style.color = lang==='en' ? 'var(--navy)' : 'var(--grey)';
+  }
+
+  // nav 버튼 텍스트
+  ['home','about','people','research','activity','contact','apply'].forEach(p=>{
+    const btn = document.getElementById('nb-'+p);
+    if(btn && LANG['nb-'+p]) btn.textContent = LANG['nb-'+p][lang];
+  });
+
+  // 지원하기 버튼
+  const applyBtns = document.querySelectorAll('[data-ko][data-en]');
+  applyBtns.forEach(el=>{
+    const val = el.getAttribute('data-'+lang);
+    if(val) el.textContent = val;
+  });
+
+  // header CTA 버튼
+  const ctaBtn = document.querySelector('.btn-apply-header');
+  if(ctaBtn && LANG['apply-cta']) ctaBtn.textContent = LANG['apply-cta'][lang];
+
+  // 페이지 재렌더링 (현재 활성 페이지 기반)
+  applyLangToPage();
+}
+
+function T(key){ return LANG[key] ? LANG[key][currentLang] : ''; }
+
+function applyLangToPage(){
+  // HOME
+  const heroLabel = document.querySelector('.hero-label');
+  if(heroLabel) heroLabel.innerHTML = (heroLabel.innerHTML.includes('●') ? '<span style="width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>' : '') + T('hero-label');
+
+  const heroH = document.querySelector('.hero-h');
+  if(heroH) heroH.innerHTML = T('hero-h1').replace(/\n/g,'<br>');
+
+  const heroDesc = document.querySelector('.hero-desc');
+  if(heroDesc) heroDesc.innerHTML = T('hero-desc');
+
+  const heroBtn1 = document.querySelector('.hero-btns .btn-gold');
+  if(heroBtn1) heroBtn1.textContent = T('hero-btn1');
+  const heroBtn2 = document.querySelector('.hero-btns .btn-ghost');
+  if(heroBtn2) heroBtn2.textContent = T('hero-btn2');
+
+  const hsLabels = document.querySelectorAll('.hs-label');
+  ['hs-label-1','hs-label-2','hs-label-3','hs-label-4'].forEach((k,i)=>{
+    if(hsLabels[i]) hsLabels[i].textContent = T(k);
+  });
+
+  // ABOUT
+  setById('about-eyebrow-el', T('about-eyebrow'));
+  setInnerById('about-h1-el', T('about-h1'));
+  setById('about-sub-el', T('about-sub'));
+  setById('mission-eyebrow-el', T('mission-eyebrow'));
+  setInnerById('mission-h-el', T('mission-h'));
+  setById('mission-p1-el', T('mission-p1'));
+  setById('mission-p2-el', T('mission-p2'));
+  setInnerById('officer-eyebrow-el', T('officer-eyebrow'));
+  setInnerById('officer-h-el', T('officer-h'));
+
+  // PEOPLE
+  setById('people-eyebrow-el', T('people-eyebrow'));
+  setInnerById('people-h1-el', T('people-h1'));
+  setById('people-sub-el', T('people-sub'));
+  setById('org-eyebrow-el', T('org-eyebrow'));
+  setInnerById('org-h-el', T('org-h'));
+  setById('mem-eyebrow-el', T('mem-eyebrow'));
+  setInnerById('mem-h-el', T('mem-h'));
+
+  // RESEARCH
+  setById('res-eyebrow-el', T('res-eyebrow'));
+  setInnerById('res-h1-el', T('res-h1'));
+  setById('res-sub-el', T('res-sub'));
+
+  // ACTIVITY
+  setById('act-eyebrow-el', T('act-eyebrow'));
+  setInnerById('act-h1-el', T('act-h1'));
+  setById('act-sub-el', T('act-sub'));
+  setInnerById('act-tab1-el', T('act-tab1'));
+  setInnerById('act-tab2-el', T('act-tab2'));
+
+  // CONTACT
+  setById('contact-eyebrow-el', T('contact-eyebrow'));
+  setInnerById('contact-h1-el', T('contact-h1'));
+  setById('contact-email-sub-el', T('contact-email-sub'));
+  setById('contact-ig-sub-el', T('contact-ig-sub'));
+  setById('contact-loc-sub-el', T('contact-loc-sub'));
+  setInnerById('contact-form-h-el', T('contact-form-h'));
+  setById('contact-form-p-el', T('contact-form-p'));
+  setById('form-name-lbl-el', T('form-name-lbl'));
+  setById('form-email-lbl-el', T('form-email-lbl'));
+  setById('form-msg-lbl-el', T('form-msg-lbl'));
+  setAttr('form-name-inp', 'placeholder', T('form-name-ph'));
+  setAttr('form-email-inp', 'placeholder', T('form-email-ph'));
+  setAttr('form-msg-inp', 'placeholder', T('form-msg-ph'));
+  setById('contact-btn-el', T('contact-btn'));
+
+  // APPLY
+  setInnerById('apply-h1-el', T('apply-h1'));
+  setInnerById('apply-desc-el', T('apply-desc'));
+  setById('apply-closed-t-el', T('apply-closed-t'));
+  setInnerById('apply-closed-d-el', T('apply-closed-d'));
+  setById('apply-next-h-el', T('apply-next-h'));
+  setInnerById('apply-next-p-el', T('apply-next-p'));
+  setById('apply-contact-btn-el', T('apply-contact-btn'));
+}
+
+function setById(id, val){ const el=document.getElementById(id); if(el&&val) el.textContent=val; }
+function setInnerById(id, val){ const el=document.getElementById(id); if(el&&val) el.innerHTML=val; }
+function setAttr(id, attr, val){ const el=document.getElementById(id); if(el&&val) el.setAttribute(attr, val); }
+
+
+/* ══════════ STATE ══════════ */
+let isAdmin=false;
+let resPosts=JSON.parse(localStorage.getItem('fb_res')||'[]');
+let wkPosts=JSON.parse(localStorage.getItem('fb_wk')||'[]');
+let evPosts=JSON.parse(localStorage.getItem('fb_ev')||'[]');
+let editResId=null,editWkId=null,editEvId=null;
+let pendWkPhotos=[],pendEvPhotos=[];
+let lbImages=[],lbIdx=0;
+let resFilter='all',wkFilterVal='all',evFilterVal='all';
+let resPage=1,wkPage=1,evPage=1;
+const PER=6;
+
+/* ══════════ STATIC DATA ══════════ */
+const officers=[
+  {name:'홍길동',role:'회장',dept:'전체'},
+  {name:'김영희',role:'부회장',dept:'리서치 1팀'},
+  {name:'이철수',role:'팀장',dept:'리서치 1팀'},
+  {name:'박민지',role:'팀장',dept:'리서치 2팀'},
+  {name:'최준혁',role:'팀장',dept:'콘텐츠/홍보팀'},
+  {name:'정소연',role:'팀장',dept:'이벤트 기획팀'},
+  {name:'강동원',role:'총무',dept:'전체'},
+  {name:'윤서아',role:'서기',dept:'전체'},
+];
+const allMembers={
+  '리서치 1팀':['이철수','김민준','박서연','조현우','유나경','송태양'],
+  '리서치 2팀':['박민지','한지수','오승환','임채원','전민서','백수진'],
+  '콘텐츠/홍보팀':['최준혁','문지훈','신예진','이다은','황성민'],
+  '이벤트 기획팀':['정소연','권태호','남궁서아','안지호','배지현'],
+};
+
+/* ══════════ NAV ══════════ */
+function goto(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nb-'+page)?.classList.add('active');
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>b.classList.remove('active'));
+  window.scrollTo({top:0,behavior:'smooth'});
+  // FAB는 항상 표시 (관리자 모드 여부 무관)
+  document.getElementById('adminFab').classList.add('show');
+  if(page==='about')renderOfficers();
+  if(page==='people'){renderOrgChart();renderMembers();}
+  if(page==='research')renderRes();
+  if(page==='activity'){renderWk();renderEv();}
+  setTimeout(()=>document.querySelectorAll('#page-'+page+' .fu').forEach(el=>observer.observe(el)),50);
+}
+
+/* ══════════ SCROLL ══════════ */
+let lastSY=0;
+const hdr=document.getElementById('hdr');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  if(y>50)hdr.classList.add('scrolled'); else hdr.classList.remove('scrolled');
+  hdr.style.transition='transform .35s ease';
+  hdr.style.transform=(y>lastSY&&y>100)?'translateY(-100%)':'translateY(0)';
+  lastSY=y;
+});
+
+/* ══════════ MOBILE MENU ══════════ */
+function toggleMob(){const m=document.getElementById('mobMenu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':'';}
+
+/* ══════════ FADE OBSERVER ══════════ */
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.1});
+document.querySelectorAll('.fu').forEach(el=>observer.observe(el));
+
+/* ══════════ MODAL HELPERS ══════════ */
+function openM(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeM(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-ov').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');document.body.style.overflow='';}});});
+
+/* ══════════ ADMIN MODE ══════════ */
+let pendingDeleteFn = null;
+
+function setAdminMode(on){
+  isAdmin = on;
+  const bar = document.getElementById('adminBar');
+  const ticker = document.getElementById('tickerWrap');
+  bar.classList.toggle('on', on);
+  ticker.classList.toggle('admin-pushed', on);
+  // FAB 항상 표시
+  document.getElementById('adminFab').classList.add('show');
+  // 모든 렌더 갱신 (수정/삭제 버튼 표시)
+  renderRes(); renderWk(); renderEv();
+  if(on) renderOfficers();
+}
+
+function openPw(){
+  if(isAdmin){ openM('writeChoiceModal'); return; }
+  document.getElementById('pwIn').value='';
+  document.getElementById('pwErr').textContent='';
+  openM('pwModal');
+  setTimeout(()=>document.getElementById('pwIn').focus(),100);
+}
+
+function checkPw(){
+  if(document.getElementById('pwIn').value===ADMIN_PW){
+    closeM('pwModal');
+    setAdminMode(true);
+    openM('writeChoiceModal');
+  } else {
+    document.getElementById('pwErr').textContent='❌ 비밀번호가 틀렸습니다.';
+    document.getElementById('pwIn').value='';
+    document.getElementById('pwIn').focus();
+  }
+}
+
+function adminLogout(){
+  setAdminMode(false);
+  showToast('관리자 모드 해제되었습니다.');
+}
+
+function openWrite(type){
+  closeM('writeChoiceModal');
+  if(type==='research'){ resetResForm(); openM('resModal'); }
+  else if(type==='weekly'){ resetWkForm(); openM('wkModal'); }
+  else { resetEvForm(); openM('evModal'); }
+}
+
+/* ══════════ CONFIRM DIALOG ══════════ */
+function confirmDel(title, desc, fn){
+  // 열려있는 다른 모달 먼저 닫기 (z-index 충돌 방지)
+  document.querySelectorAll('.modal-ov.open').forEach(m => {
+    if(m.id !== 'confirmModal') m.classList.remove('open');
+  });
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmDesc').textContent = desc;
+  pendingDeleteFn = fn;
+  // body overflow hidden 유지하면서 confirmModal만 열기
+  document.getElementById('confirmModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function confirmAction(){
+  document.getElementById('confirmModal').classList.remove('open');
+  document.body.style.overflow = '';
+  if(pendingDeleteFn){
+    const fn = pendingDeleteFn;
+    pendingDeleteFn = null;
+    fn();
+  }
+}
+
+/* ══════════ TOAST ══════════ */
+function showToast(msg, type='success'){
+  const existing = document.getElementById('toastEl');
+  if(existing) existing.remove();
+  const t = document.createElement('div');
+  t.id = 'toastEl';
+  t.style.cssText = `position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:${type==='success'?'var(--navy-card)':'rgba(214,52,71,.15)'};
+    border:1px solid ${type==='success'?'var(--border)':'rgba(214,52,71,.4)'};
+    color:${type==='error'?'var(--red)':'var(--white)'};
+    padding:12px 28px;border-radius:10px;font-size:.85rem;font-weight:600;
+    z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;
+    opacity:0;white-space:nowrap;font-family:'Syne',sans-serif;
+    box-shadow:0 8px 32px rgba(0,0,0,.4)`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>{
+    t.style.transform='translateX(-50%) translateY(0)';
+    t.style.opacity='1';
+  });
+  setTimeout(()=>{
+    t.style.transform='translateX(-50%) translateY(80px)';
+    t.style.opacity='0';
+    setTimeout(()=>t.remove(),400);
+  },2800);
+}
+
+/* ══════════ OFFICERS ══════════ */
+function renderOfficers(){
+  document.getElementById('officersGrid').innerHTML=officers.map(o=>`
+    <div class="officer-card fu">
+      <div class="officer-avatar">${o.name[0]}</div>
+      <div class="officer-name">${o.name}</div>
+      <div class="officer-role">${o.role}</div>
+      <div class="officer-dept">${o.dept}</div>
+    </div>`).join('');
+  document.querySelectorAll('#officersGrid .fu').forEach(el=>observer.observe(el));
+}
+
+/* ══════════ ORG CHART ══════════ */
+function renderOrgChart(){
+  const chart=document.getElementById('orgChart');
+  chart.innerHTML=`
+    <div style="display:flex;justify-content:center;padding-bottom:0">
+      <div class="org-card president"><div class="org-card-title">회장</div><div class="org-card-name">홍길동</div></div>
+    </div>
+    <div style="width:2px;height:32px;background:var(--border);margin:0 auto"></div>
+    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
+      <div class="org-card"><div class="org-card-title">부회장</div><div class="org-card-name">김영희</div></div>
+      <div class="org-card"><div class="org-card-title">총무</div><div class="org-card-name">강동원</div></div>
+      <div class="org-card"><div class="org-card-title">서기</div><div class="org-card-name">윤서아</div></div>
+    </div>
+    <div style="width:2px;height:32px;background:var(--border);margin:0 auto"></div>
+    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
+      ${[['리서치 1팀','이철수'],['리서치 2팀','박민지'],['콘텐츠/홍보팀','최준혁'],['이벤트 기획팀','정소연']].map(([dept,name])=>`
+        <div class="org-card"><div class="org-card-title">${dept}</div><div class="org-card-name">${name} 팀장</div></div>`).join('')}
+    </div>`;
+}
+
+/* ══════════ MEMBERS ══════════ */
+function renderMembers(){
+  const container=document.getElementById('membersList');
+  container.innerHTML=Object.entries(allMembers).map(([dept,members])=>`
+    <div class="dept-group fu">
+      <div class="dept-group-title">${dept}</div>
+      <div class="members-grid">
+        ${members.map(name=>`
+          <div class="member-card">
+            <div class="member-avatar">${name[0]}</div>
+            <div class="member-name">${name}</div>
+            <div class="member-dept">${dept}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('#membersList .fu').forEach(el=>observer.observe(el));
+}
+
+/* ══════════ UTILS ══════════ */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(d){if(!d)return'';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function shortUrl(u){try{const p=new URL(u);return p.hostname.replace('www.','')+( p.pathname.length>18?'...':p.pathname);}catch{return u.slice(0,28)+(u.length>28?'...':'');}}
+function saveRes(){localStorage.setItem('fb_res',JSON.stringify(resPosts));}
+function saveWk(){localStorage.setItem('fb_wk',JSON.stringify(wkPosts));}
+function saveEv(){localStorage.setItem('fb_ev',JSON.stringify(evPosts));}
+
+/* ══════════ PAGINATION ══════════ */
+function renderPag(containerId,cur,total,fn){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  if(total<=1){el.innerHTML='';return;}
+  let h=`<button class="pg-btn" onclick="${fn}(${cur-1})" ${cur===1?'disabled':''}>‹</button>`;
+  for(let i=1;i<=total;i++)h+=`<button class="pg-btn ${i===cur?'on':''}" onclick="${fn}(${i})">${i}</button>`;
+  h+=`<button class="pg-btn" onclick="${fn}(${cur+1})" ${cur===total?'disabled':''}>›</button>`;
+  el.innerHTML=h;
+}
+
+/* ══════════ RESEARCH ══════════ */
+function resetResForm(){
+  editResId=null;
+  document.getElementById('resMTitle').innerHTML='📄 리서치 <span class="g">업로드</span>';
+  document.getElementById('resSubmitBtn').textContent='업로드';
+  ['rm-title','rm-excerpt','rm-content','rm-link'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rm-team').value='리서치1팀';
+  document.getElementById('rm-date').value=new Date().toISOString().split('T')[0];
+}
+function submitRes(){
+  const title=document.getElementById('rm-title').value.trim();
+  const team=document.getElementById('rm-team').value;
+  const date=document.getElementById('rm-date').value;
+  const excerpt=document.getElementById('rm-excerpt').value.trim();
+  const content=document.getElementById('rm-content').value.trim();
+  const link=document.getElementById('rm-link').value.trim();
+  if(!title||!content){alert('제목과 내용은 필수입니다.');return;}
+  if(editResId){
+    const i=resPosts.findIndex(p=>p.id===editResId);
+    if(i>-1)resPosts[i]={...resPosts[i],title,team,date,excerpt,content,link};
+  } else {
+    resPosts.unshift({id:genId(),title,team,date,excerpt,content,link,createdAt:Date.now()});
+  }
+  saveRes();renderRes();closeM('resModal');showToast(editResId?'리서치가 수정되었습니다.':'리서치가 등록되었습니다.');
+}
+function filterRes(val,btn){
+  resFilter=val;resPage=1;
+  document.querySelectorAll('#researchFilter .filter-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderRes();
+}
+function goResPage(p){resPage=p;renderRes();document.getElementById('page-research').scrollIntoView({behavior:'smooth',block:'start'});}
+function renderRes(){
+  const grid=document.getElementById('researchGrid');
+  const empty=document.getElementById('researchEmpty');
+  let data=resPosts.filter(p=>resFilter==='all'||p.team===resFilter);
+  if(!data.length){grid.innerHTML='';empty.style.display='block';document.getElementById('resPagination').innerHTML='';return;}
+  empty.style.display='none';
+  const total=Math.ceil(data.length/PER);
+  if(resPage>total)resPage=total;
+  const paged=data.slice((resPage-1)*PER,resPage*PER);
+  grid.innerHTML=paged.map((p,i)=>`
+    <div class="research-card fu" style="transition-delay:${i*.07}s" onclick="viewRes('${p.id}')">
+      <div class="rc-header">
+        <span class="rc-type">${esc(p.team)}</span>
+        <span class="rc-date">${fmtDate(p.date)}</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">${esc(p.title)}</div>
+        <div class="rc-excerpt">${esc(p.excerpt||p.content)}</div>
+        <div class="rc-footer">
+          <span class="rc-team">${esc(p.team)}</span>
+          <span class="rc-arrow">Read more →</span>
+        </div>
+        ${isAdmin?`<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn-edit" style="flex:1;justify-content:center" onclick="event.stopPropagation();editRes('${p.id}')">✏ 수정</button>
+          <button class="btn-del" style="flex:1;justify-content:center" onclick="event.stopPropagation();delRes('${p.id}')">🗑 삭제</button>
+        </div>`:''}
+      </div>
+    </div>`).join('');
+  grid.querySelectorAll('.fu').forEach(el=>{el.classList.add('vis');});
+  renderPag('resPagination',resPage,total,'goResPage');
+}
+function viewRes(id){
+  const p=resPosts.find(p=>p.id===id);if(!p)return;
+  document.getElementById('rv-team').textContent=p.team;
+  document.getElementById('rv-title').textContent=p.title;
+  document.getElementById('rv-date').textContent=fmtDate(p.date);
+  let body=p.content.split('\n\n').map(par=>`<p>${esc(par).replace(/\n/g,'<br>')}</p>`).join('');
+  if(p.link)body+=`<div style="margin-top:20px"><a href="${esc(p.link)}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--navy-light);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.82rem;color:var(--gold);text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📎 PDF / 자료 보기 →</a></div>`;
+  document.getElementById('rv-body').innerHTML=body;
+  document.getElementById('rv-actions').innerHTML=isAdmin?`
+    <div style="display:flex;align-items:center;gap:8px;width:100%">
+      <span style="font-size:.75rem;color:var(--grey);margin-right:auto">🔐 관리자 모드</span>
+      <button class="btn-edit" onclick="editRes('${p.id}')">✏ 수정</button>
+      <button class="btn-del" onclick="event.stopPropagation();delRes('${p.id}')">🗑 삭제</button>
+    </div>`:'';
+
+  openM('resViewModal');
+}
+function editRes(id){
+  const p=resPosts.find(p=>p.id===id);if(!p)return;
+  closeM('resViewModal');editResId=id;
+  document.getElementById('resMTitle').innerHTML='✏ 리서치 <span class="g">수정</span>';
+  document.getElementById('resSubmitBtn').textContent='수정 완료';
+  document.getElementById('rm-title').value=p.title||'';
+  document.getElementById('rm-team').value=p.team||'리서치1팀';
+  document.getElementById('rm-date').value=p.date||'';
+  document.getElementById('rm-excerpt').value=p.excerpt||'';
+  document.getElementById('rm-content').value=p.content||'';
+  document.getElementById('rm-link').value=p.link||'';
+  openM('resModal');
+}
+function delRes(id){confirmDel('리서치를 삭제할까요?','삭제된 리서치는 복구할 수 없습니다.',()=>{resPosts=resPosts.filter(p=>p.id!==id);saveRes();renderRes();closeM('resViewModal');showToast('리서치가 삭제되었습니다.');});}
+
+/* ══════════ WEEK PHOTOS ══════════ */
+function handleWkPhotos(e){
+  Array.from(e.target.files).slice(0,10-pendWkPhotos.length).forEach(f=>{
+    const r=new FileReader();r.onload=ev=>{pendWkPhotos.push(ev.target.result);renderWkPrev();};r.readAsDataURL(f);
+  });e.target.value='';
+}
+function renderWkPrev(){
+  document.getElementById('wkPrevGrid').innerHTML=pendWkPhotos.map((s,i)=>`<div class="pprev"><img src="${s}"/><button class="pprev-rm" onclick="pendWkPhotos.splice(${i},1);renderWkPrev()">✕</button></div>`).join('');
+  document.getElementById('wkPrevCount').textContent=pendWkPhotos.length?`${pendWkPhotos.length}장 선택됨`:'';
+}
+/* ══════════ WEEK POSTS ══════════ */
+function resetWkForm(){
+  editWkId=null;pendWkPhotos=[];
+  document.getElementById('wkMTitle').innerHTML='📚 주차 활동 <span class="g">등록</span>';
+  document.getElementById('wkSubmitBtn').textContent='등록';
+  ['wm-num','wm-date','wm-title','wm-presenter','wm-content','wm-links','wm-tags'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('wm-team').value='전체세션';
+  document.getElementById('wm-date').value=new Date().toISOString().split('T')[0];
+  renderWkPrev();
+}
+function submitWk(){
+  const num=document.getElementById('wm-num').value.trim();
+  const title=document.getElementById('wm-title').value.trim();
+  const date=document.getElementById('wm-date').value;
+  const team=document.getElementById('wm-team').value;
+  const presenter=document.getElementById('wm-presenter').value.trim();
+  const content=document.getElementById('wm-content').value.trim();
+  const links=document.getElementById('wm-links').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
+  const tags=document.getElementById('wm-tags').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
+  const photos=[...pendWkPhotos];
+  if(!num||!title||!content){alert('주차, 제목, 내용은 필수입니다.');return;}
+  if(editWkId){
+    const i=wkPosts.findIndex(p=>p.id===editWkId);
+    if(i>-1)wkPosts[i]={...wkPosts[i],num,title,date,team,presenter,content,links,tags,photos:photos.length?photos:wkPosts[i].photos||[]};
+  } else {
+    wkPosts.unshift({id:genId(),num,title,date,team,presenter,content,links,tags,photos,createdAt:Date.now()});
+  }
+  saveWk();renderWk();closeM('wkModal');showToast(editWkId?'활동이 수정되었습니다.':'활동이 등록되었습니다.');
+}
+function wkFilter(val,btn){
+  wkFilterVal=val;wkPage=1;
+  document.querySelectorAll('#pane-weekly .filter-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderWk();
+}
+function goWkPage(p){wkPage=p;renderWk();document.getElementById('pane-weekly').scrollIntoView({behavior:'smooth',block:'start'});}
+function renderWk(){
+  const list=document.getElementById('weekList');
+  const empty=document.getElementById('weekEmpty');
+  let data=wkPosts.filter(p=>wkFilterVal==='all'||p.team===wkFilterVal);
+  if(!data.length){list.innerHTML='';empty.style.display='block';document.getElementById('weekPag').innerHTML='';return;}
+  empty.style.display='none';
+  const total=Math.ceil(data.length/PER);
+  if(wkPage>total)wkPage=total;
+  const paged=data.slice((wkPage-1)*PER,wkPage*PER);
+  window._wkPhotos={};data.forEach(p=>{if(p.photos)window._wkPhotos[p.id]=p.photos;});
+  list.innerHTML=paged.map((p,i)=>`
+    <div class="week-item" id="wi-${p.id}">
+      <div class="week-hd" onclick="toggleWk('${p.id}')">
+        <span class="week-num-badge">${esc(p.num)}</span>
+        <div class="week-info">
+          <div class="week-title">${esc(p.title)}</div>
+          <div class="week-meta">${fmtDate(p.date)} · ${esc(p.team)}${p.presenter?' · '+esc(p.presenter):''}${p.photos?.length?' · 📷 '+p.photos.length+'장':''}</div>
+        </div>
+        ${p.tags?.length?`<div class="week-tags">${p.tags.slice(0,3).map(t=>`<span class="week-tag">${esc(t)}</span>`).join('')}</div>`:''}
+        <span class="week-chevron">▾</span>
+      </div>
+      <div class="week-body">
+        <div class="week-body-text">${esc(p.content).replace(/\n/g,'<br>')}</div>
+        ${p.photos?.length?`<div class="week-photos">${p.photos.map((s,idx)=>`<img src="${s}" onclick="openLb(window._wkPhotos['${p.id}'],${idx})"/>`).join('')}</div>`:''}
+        ${p.links?.length?`<div class="week-links">${p.links.map(l=>`<a class="week-link" href="${esc(l)}" target="_blank">📎 ${shortUrl(l)}</a>`).join('')}</div>`:''}
+        ${isAdmin?`<div class="week-admin-btns" style="padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">
+          <span style="font-size:.72rem;color:var(--grey);margin-right:auto">🔐 관리자</span>
+          <button class="btn-edit" onclick="event.stopPropagation();editWk('${p.id}')">✏ 수정</button>
+          <button class="btn-del" onclick="event.stopPropagation();delWk('${p.id}')">🗑 삭제</button>
+        </div>`:''}
+      </div>
+    </div>`).join('');
+  renderPag('weekPag',wkPage,total,'goWkPage');
+}
+function toggleWk(id){document.getElementById('wi-'+id).classList.toggle('open');}
+function editWk(id){
+  const p=wkPosts.find(p=>p.id===id);if(!p)return;
+  editWkId=id;pendWkPhotos=p.photos?[...p.photos]:[];
+  document.getElementById('wkMTitle').innerHTML='✏ 주차 활동 <span class="g">수정</span>';
+  document.getElementById('wkSubmitBtn').textContent='수정 완료';
+  document.getElementById('wm-num').value=p.num||'';
+  document.getElementById('wm-date').value=p.date||'';
+  document.getElementById('wm-title').value=p.title||'';
+  document.getElementById('wm-team').value=p.team||'전체세션';
+  document.getElementById('wm-presenter').value=p.presenter||'';
+  document.getElementById('wm-content').value=p.content||'';
+  document.getElementById('wm-links').value=p.links?.join(', ')||'';
+  document.getElementById('wm-tags').value=p.tags?.join(', ')||'';
+  renderWkPrev();openM('wkModal');
+}
+function delWk(id){confirmDel('활동을 삭제할까요?','삭제된 활동은 복구할 수 없습니다.',()=>{wkPosts=wkPosts.filter(p=>p.id!==id);saveWk();renderWk();showToast('활동이 삭제되었습니다.');});}
+
+/* ══════════ EVENT PHOTOS ══════════ */
+function handleEvPhotos(e){
+  Array.from(e.target.files).slice(0,10-pendEvPhotos.length).forEach(f=>{
+    const r=new FileReader();r.onload=ev=>{pendEvPhotos.push(ev.target.result);renderEvPrev();};r.readAsDataURL(f);
+  });e.target.value='';
+}
+function renderEvPrev(){
+  document.getElementById('evPrevGrid').innerHTML=pendEvPhotos.map((s,i)=>`<div class="pprev"><img src="${s}"/><button class="pprev-rm" onclick="pendEvPhotos.splice(${i},1);renderEvPrev()">✕</button></div>`).join('');
+  document.getElementById('evPrevCount').textContent=pendEvPhotos.length?`${pendEvPhotos.length}장 선택됨`:'';
+}
+/* ══════════ EVENT POSTS ══════════ */
+function resetEvForm(){
+  editEvId=null;pendEvPhotos=[];
+  document.getElementById('evMTitle').innerHTML='🎉 이벤트 <span class="g">포스팅</span>';
+  document.getElementById('evSubmitBtn').textContent='포스팅';
+  ['em-title','em-author','em-excerpt','em-content'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('em-cat').value='세미나';
+  document.getElementById('em-date').value=new Date().toISOString().split('T')[0];
+  renderEvPrev();
+}
+function submitEv(){
+  const title=document.getElementById('em-title').value.trim();
+  const cat=document.getElementById('em-cat').value;
+  const date=document.getElementById('em-date').value;
+  const author=document.getElementById('em-author').value.trim()||'FINBASE';
+  const excerpt=document.getElementById('em-excerpt').value.trim();
+  const content=document.getElementById('em-content').value.trim();
+  const photos=[...pendEvPhotos];
+  if(!title||!content){alert('제목과 내용은 필수입니다.');return;}
+  if(editEvId){
+    const i=evPosts.findIndex(p=>p.id===editEvId);
+    if(i>-1)evPosts[i]={...evPosts[i],title,cat,date,author,excerpt,content,photos:photos.length?photos:evPosts[i].photos||[]};
+  } else {
+    evPosts.unshift({id:genId(),title,cat,date,author,excerpt,content,photos,createdAt:Date.now()});
+  }
+  saveEv();renderEv();closeM('evModal');showToast(editEvId?'포스팅이 수정되었습니다.':'포스팅이 등록되었습니다.');
+}
+function evFilter(val,btn){
+  evFilterVal=val;evPage=1;
+  document.querySelectorAll('#pane-events .filter-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderEv();
+}
+function goEvPage(p){evPage=p;renderEv();document.getElementById('pane-events').scrollIntoView({behavior:'smooth',block:'start'});}
+function renderEv(){
+  const grid=document.getElementById('eventsGrid');
+  const empty=document.getElementById('evEmpty');
+  let data=evPosts.filter(p=>evFilterVal==='all'||p.cat===evFilterVal);
+  if(!data.length){grid.innerHTML='';empty.style.display='block';document.getElementById('evPag').innerHTML='';return;}
+  empty.style.display='none';
+  const total=Math.ceil(data.length/PER);
+  if(evPage>total)evPage=total;
+  const paged=data.slice((evPage-1)*PER,evPage*PER);
+  grid.innerHTML=paged.map((p,i)=>`
+    <div class="ev-card" onclick="viewEv('${p.id}')">
+      <div class="ev-thumb">
+        ${p.photos?.length?`<img src="${p.photos[0]}" alt="${esc(p.title)}" />`:'<div class="ev-thumb-ph">🎉</div>'}
+        <span class="ev-badge">${esc(p.cat)}</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-cat">${esc(p.cat)}</div>
+        <div class="ev-title">${esc(p.title)}</div>
+        <div class="ev-excerpt">${esc(p.excerpt||p.content)}</div>
+        <div class="ev-foot"><span>${fmtDate(p.date)}</span><span>${esc(p.author)}</span></div>
+        <div class="read-more-arrow">자세히 보기 →</div>
+        ${isAdmin?`<div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)" onclick="event.stopPropagation()">
+          <button class="btn-edit" style="flex:1;justify-content:center" onclick="editEv('${p.id}')">✏ 수정</button>
+          <button class="btn-del" style="flex:1;justify-content:center" onclick="event.stopPropagation();delEv('${p.id}')">🗑 삭제</button>
+        </div>`:''}
+      </div>
+    </div>`).join('');
+  renderPag('evPag',evPage,total,'goEvPage');
+}
+function viewEv(id){
+  const p=evPosts.find(p=>p.id===id);if(!p)return;
+  document.getElementById('vv-cat').textContent=p.cat;
+  document.getElementById('vv-title').textContent=p.title;
+  document.getElementById('vv-date').textContent=fmtDate(p.date);
+  document.getElementById('vv-author').textContent=p.author;
+  let body=p.content.split('\n\n').map(par=>`<p>${esc(par).replace(/\n/g,'<br>')}</p>`).join('');
+  if(p.photos?.length){
+    body+=`<div class="pv-gallery">${p.photos.map((s,i)=>`<img src="${s}" onclick="openLb(window._evPhotos,${i})"/>`).join('')}</div>`;
+    window._evPhotos=p.photos;
+  }
+  document.getElementById('vv-body').innerHTML=body;
+  document.getElementById('vv-actions').innerHTML=isAdmin?`
+    <div style="display:flex;align-items:center;gap:8px;width:100%">
+      <span style="font-size:.75rem;color:var(--grey);margin-right:auto">🔐 관리자 모드</span>
+      <button class="btn-edit" onclick="editEv('${p.id}')">✏ 수정</button>
+      <button class="btn-del" onclick="event.stopPropagation();delEv('${p.id}')">🗑 삭제</button>
+    </div>`:'';
+
+  openM('evViewModal');
+}
+function editEv(id){
+  const p=evPosts.find(p=>p.id===id);if(!p)return;
+  closeM('evViewModal');editEvId=id;pendEvPhotos=p.photos?[...p.photos]:[];
+  document.getElementById('evMTitle').innerHTML='✏ 이벤트 <span class="g">수정</span>';
+  document.getElementById('evSubmitBtn').textContent='수정 완료';
+  document.getElementById('em-title').value=p.title||'';
+  document.getElementById('em-cat').value=p.cat||'세미나';
+  document.getElementById('em-date').value=p.date||'';
+  document.getElementById('em-author').value=p.author||'';
+  document.getElementById('em-excerpt').value=p.excerpt||'';
+  document.getElementById('em-content').value=p.content||'';
+  renderEvPrev();openM('evModal');
+}
+function delEv(id){confirmDel('포스팅을 삭제할까요?','삭제된 포스팅은 복구할 수 없습니다.',()=>{evPosts=evPosts.filter(p=>p.id!==id);saveEv();renderEv();closeM('evViewModal');showToast('포스팅이 삭제되었습니다.');});}
+
+/* ══════════ ACTIVITY TABS ══════════ */
+function actTab(tab,btn){
+  document.querySelectorAll('.act-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.act-pane').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pane-'+tab).classList.add('on');
+}
+
+/* ══════════ LIGHTBOX ══════════ */
+function openLb(imgs,idx){lbImages=imgs;lbIdx=idx;document.getElementById('lbImg').src=lbImages[lbIdx];document.getElementById('lbCount').textContent=`${lbIdx+1} / ${lbImages.length}`;document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function lbPrev(){lbIdx=(lbIdx-1+lbImages.length)%lbImages.length;document.getElementById('lbImg').src=lbImages[lbIdx];document.getElementById('lbCount').textContent=`${lbIdx+1} / ${lbImages.length}`;}
+function lbNext(){lbIdx=(lbIdx+1)%lbImages.length;document.getElementById('lbImg').src=lbImages[lbIdx];document.getElementById('lbCount').textContent=`${lbIdx+1} / ${lbImages.length}`;}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext();
+});
+
+/* ══════════ SAMPLE DATA ══════════ */
+function loadSamples(){
+  const sw=[
+    {id:'sw1',num:'1기 4주차',title:'이벤트 플래닝',date:'2026-03-28',team:'콘텐츠팀',presenter:'',content:'1기 4주차 콘텐츠팀 이벤트 플래닝 세션을 진행했습니다.\n향후 진행할 교내 이벤트 기획안을 구체화하고 역할을 분담했습니다.',links:[],tags:['이벤트','플래닝'],photos:[],createdAt:1711641600000},
+    {id:'sw2',num:'1기 3주차',title:'Mason Day 플래닝',date:'2026-03-21',team:'콘텐츠팀',presenter:'',content:'George Mason Korea 외국인 학생들을 대상으로 한국 문화를 알리는 Mason Day 이벤트를 기획했습니다.\n민속놀이 체험 및 FINBASE 홍보를 동시에 달성하는 방향으로 세부 계획을 수립했습니다.',links:[],tags:['Mason Day','문화교류'],photos:[],createdAt:1711036800000},
+    {id:'sw3',num:'1기 2주차',title:'Movie Night — The Big Short',date:'2026-03-14',team:'콘텐츠팀',presenter:'',content:'교내 친목 활동으로 영화 The Big Short를 함께 관람했습니다.\n2008 금융위기, CDS, CDO 등 실제 금융 개념을 영화를 통해 이해했습니다.',links:[],tags:['Movie Night','금융교육'],photos:[],createdAt:1710432000000},
+    {id:'sw4',num:'1기 1주차',title:'웹사이트 제작 토론 및 홍보 플래닝',date:'2026-03-07',team:'콘텐츠팀',presenter:'',content:'FINBASE 공식 웹사이트 제작 방향과 SNS 홍보 전략을 논의했습니다.',links:[],tags:['웹사이트','홍보'],photos:[],createdAt:1709827200000},
+    {id:'sw5',num:'1기 3주차',title:'리서치 본격 시작',date:'2026-03-21',team:'전체세션',presenter:'',content:'각 팀별로 리서치 주제를 확정하고 자료 수집 및 분석에 돌입했습니다.',links:[],tags:['리서치'],photos:[],createdAt:1711036800000},
+    {id:'sw6',num:'1기 2주차',title:'전문가 초청 강의',date:'2026-03-14',team:'전체세션',presenter:'',content:'금융권 전문가를 초청하여 IB 실무와 커리어에 대한 강의를 들었습니다.',links:[],tags:['전문가초청'],photos:[],createdAt:1710432000000},
+    {id:'sw7',num:'1기 1주차',title:'역할분담 및 리서치 플래닝',date:'2026-03-07',team:'전체세션',presenter:'',content:'첫 세션으로 팀별 역할 분담과 리서치 플래닝을 진행했습니다.',links:[],tags:['역할분담','플래닝'],photos:[],createdAt:1709827200000},
+  ];
+  const se=[
+    {id:'se1',title:'Movie Night — The Big Short',cat:'이벤트',date:'2026-03-14',author:'콘텐츠팀',excerpt:'다같이 The Big Short를 보며 금융 지식도 쌓고 친목도 다진 교내 이벤트.',content:'FINBASE 1기 콘텐츠팀이 주최한 첫 교내 이벤트, Movie Night이 진행되었습니다.\n\n영화 The Big Short는 2008년 글로벌 금융위기를 배경으로 월스트리트의 탐욕과 서브프라임 모기지 사태를 생생하게 그려낸 작품입니다.\n\n상영 후 멤버들끼리 금융 이슈에 대해 자유롭게 토론했습니다.',photos:[],createdAt:1710432000000},
+    {id:'se2',title:'여의도 IB 현직자 초청 세미나',cat:'세미나',date:'2026-03-20',author:'콘텐츠팀',excerpt:'국내 주요 IB 현직자를 모시고 진행한 커리어 세미나.',content:'지난 3월 20일, FINBASE 1기 특별 세미나가 진행되었습니다.\n\n국내 주요 증권사 IB부서 현직자 두 분을 초청하여 투자은행 업무 전반과 커리어 패스에 대한 심도 있는 이야기를 나눴습니다.\n\n실제 딜 프로세스, IB 취업 준비 방법 등 현장의 생생한 인사이트를 들을 수 있었습니다.',photos:[],createdAt:1710950400000},
+  ];
+  const sr=[
+    {id:'sr1',title:'국내 부동산 PF 시장 현황 분석',team:'리서치1팀',date:'2026-04-10',excerpt:'2024-2026년 부동산 PF 구조조정 흐름과 향후 전망을 분석한 리서치입니다.',content:'본 리서치는 최근 국내 부동산 프로젝트 파이낸싱(PF) 시장의 구조조정 현황을 분석합니다.\n\n주요 내용: 부동산 PF 익스포저 현황, 부실 채권 규모, 정부 대응 정책, 향후 시장 전망\n\n금리 인상 이후 부동산 시장 냉각과 함께 PF 대출 부실화가 심화되고 있으며, 이에 대한 금융당국의 대응을 분석합니다.',link:'',createdAt:1712793600000},
+    {id:'sr2',title:'2026 IPO 시장 전망 및 주요 공모주 분석',team:'리서치2팀',date:'2026-03-28',excerpt:'2026년 상반기 IPO 시장 트렌드와 주요 기업들의 밸류에이션 분석.',content:'2026년 IPO 시장은 전년 대비 회복세를 보이고 있습니다.\n\n본 리서치는 주요 공모주들의 밸류에이션 방법론과 적정 주가를 분석하고, 투자자 관점에서의 참여 전략을 제시합니다.\n\nPER, EV/EBITDA, DCF 등 다양한 밸류에이션 기법을 활용하여 종합적인 분석을 수행했습니다.',link:'',createdAt:1711641600000},
+  ];
+  const ew=new Set(wkPosts.map(p=>p.id));sw.filter(p=>!ew.has(p.id)).forEach(p=>wkPosts.push(p));
+  wkPosts.sort((a,b)=>new Date(b.date)-new Date(a.date));saveWk();
+  const ee=new Set(evPosts.map(p=>p.id));se.filter(p=>!ee.has(p.id)).forEach(p=>evPosts.push(p));
+  evPosts.sort((a,b)=>new Date(b.date)-new Date(a.date));saveEv();
+  const er=new Set(resPosts.map(p=>p.id));sr.filter(p=>!er.has(p.id)).forEach(p=>resPosts.push(p));
+  resPosts.sort((a,b)=>new Date(b.date)-new Date(a.date));saveRes();
+}
+loadSamples();
+setLang(currentLang);
+</script>
+</body>
+</html>
