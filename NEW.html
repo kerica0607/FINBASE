@@ -46,14 +46,19 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
 .mob-menu{display:none;position:fixed;inset:0;z-index:999;background:var(--navy-2);flex-direction:column;padding:90px 32px 60px;overflow-y:auto}
 .mob-menu.open{display:flex}
 .mob-close{position:absolute;top:22px;right:28px;background:none;border:none;color:var(--white);font-size:1.6rem;cursor:pointer;line-height:1}
-.mob-nav-btn{display:block;padding:18px 0;font-size:1.3rem;font-family:'DM Serif Display',serif;color:var(--grey);border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s}
+.mob-nav-btn{display:block;width:100%;padding:18px 0;font-size:1.3rem;font-family:'DM Serif Display',serif;color:var(--grey);background:var(--navy-2);border:none;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;text-align:left}
 .mob-nav-btn:hover,.mob-nav-btn.active{color:var(--gold)}
-.mob-apply{margin-top:32px;background:var(--gold);color:var(--navy);padding:16px;border-radius:8px;font-size:1rem;font-weight:800;text-align:center;cursor:pointer;border:none;font-family:'Syne',sans-serif}
+.mob-apply{margin-top:32px;background:var(--gold);color:var(--navy);padding:12px 32px;border-radius:8px;font-size:.9rem;font-weight:800;text-align:center;cursor:pointer;border:none;font-family:'Syne',sans-serif;display:inline-block;align-self:flex-start;letter-spacing:.06em}
 /* ── TICKER ── */
 .ticker-wrap{background:var(--navy-light);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:9px 0;margin-top:72px}
 .ticker-inner{display:inline-block;animation:tick 35s linear infinite}
-.ticker-item{display:inline-block;margin-right:72px;font-size:.75rem;color:var(--grey);letter-spacing:.06em}
+.ticker-item{display:inline-block;margin-right:72px;font-size:.75rem;color:var(--grey);letter-spacing:.06em;text-decoration:none;transition:color .2s}
 .ticker-item::before{content:'◆';color:var(--gold);margin-right:10px;font-size:.55rem}
+.ticker-link{cursor:pointer}
+.ticker-link:hover{color:var(--gold)}
+.ticker-link:hover::before{color:var(--gold-2)}
+/* 티커 hover시 일시정지 */
+.ticker-wrap:hover .ticker-inner{animation-play-state:paused}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 /* ── SHARED SECTION ── */
 .section-wrap{max-width:1280px;margin:0 auto;padding:0 32px}
@@ -75,8 +80,38 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
    PAGE 1: HOME
 ───────────────────────────────────── */
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:100px 32px 80px}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 30% 50%,rgba(232,168,0,.05) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 20%,rgba(232,168,0,.04) 0%,transparent 60%),var(--navy)}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:72px 72px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 30% 50%,rgba(232,168,0,.07) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 20%,rgba(232,168,0,.05) 0%,transparent 60%),var(--navy)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.04) 1px,transparent 1px);background-size:72px 72px;animation:gridShift 20s linear infinite}
+@keyframes gridShift{0%{transform:translateY(0)}100%{transform:translateY(72px)}}
+/* 파티클 캔버스 */
+#heroCanvas{position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%}
+/* 빛 번짐 오브 */
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);animation:orbFloat 8s ease-in-out infinite}
+.hero-orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(232,168,0,.12) 0%,transparent 70%);top:-100px;left:-100px;animation-delay:0s}
+.hero-orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(232,168,0,.08) 0%,transparent 70%);bottom:-80px;right:-80px;animation-delay:-4s}
+.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(245,200,50,.06) 0%,transparent 70%);top:40%;left:60%;animation-delay:-2s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}33%{transform:translateY(-30px) scale(1.05)}66%{transform:translateY(20px) scale(.97)}}
+/* 텍스트 등장 애니메이션 */
+.hero-inner{position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--gold-border);border-radius:4px;padding:6px 18px;font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:36px;
+  animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) both;animation-delay:.2s;opacity:0}
+.hero-label::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+/* 타이핑 커서 효과 */
+.hero-h{font-family:'DM Serif Display',serif;font-size:clamp(3rem,7vw,6.5rem);line-height:1.05;letter-spacing:-.01em;margin-bottom:32px;
+  animation:fadeSlideUp .9s cubic-bezier(.22,1,.36,1) both;animation-delay:.4s;opacity:0}
+.hero-h em{color:var(--gold);font-style:italic;position:relative;display:inline-block}
+.hero-h em::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);animation:underlineGrow 1s cubic-bezier(.22,1,.36,1) both;animation-delay:1.2s;transform-origin:left;transform:scaleX(0)}
+@keyframes underlineGrow{to{transform:scaleX(1)}}
+.hero-desc{font-size:1rem;color:var(--grey);max-width:560px;font-family:'Noto Sans KR',sans-serif;line-height:1.95;margin-bottom:48px;word-break:keep-all;
+  animation:fadeSlideUp .9s cubic-bezier(.22,1,.36,1) both;animation-delay:.6s;opacity:0}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;
+  animation:fadeSlideUp .9s cubic-bezier(.22,1,.36,1) both;animation-delay:.75s;opacity:0}
+.hero-stats{position:absolute;bottom:60px;right:32px;display:flex;gap:0;
+  animation:fadeSlideUp .9s cubic-bezier(.22,1,.36,1) both;animation-delay:.9s;opacity:0}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+/* 숫자 카운트업 */
+.hs-num{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--gold);line-height:1}
+.hs-label{font-size:.72rem;color:var(--grey);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .hero-inner{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1;width:100%}
 .hero-label{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--gold-border);border-radius:4px;padding:6px 18px;font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:36px}
 .hero-label::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
@@ -90,7 +125,7 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
 .hs-item:first-child{border-left:none}
 .hs-num{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--gold);line-height:1}
 .hs-label{font-size:.72rem;color:var(--grey);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
-.scroll-down{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--grey-2);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;animation:sbounce 2.5s ease infinite}
+.scroll-down{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--grey-2);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;animation:sbounce 2.5s ease infinite;z-index:2;opacity:.7;transition:opacity .2s}.scroll-down:hover{opacity:1}
 .scroll-down svg{width:18px;height:18px}
 @keyframes sbounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
 /* ─────────────────────────────────────
@@ -122,7 +157,7 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
 .officers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;margin-top:48px}
 .officer-card{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;text-align:center;transition:transform .3s,border-color .3s;cursor:default}
 .officer-card:hover{transform:translateY(-5px);border-color:var(--gold)}
-.officer-avatar{width:72px;height:72px;border-radius:50%;background:var(--gold-dim);border:2px solid var(--gold-border);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold)}
+.officer-avatar{width:72px;height:72px;border-radius:50%;background:var(--gold-dim);border:2px solid var(--gold-border);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;color:var(--gold)}
 .officer-name{font-size:1rem;font-weight:700;margin-bottom:4px}
 .officer-role{font-size:.78rem;color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
 .officer-dept{font-size:.78rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif}
@@ -134,27 +169,51 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
 .people-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.03) 1px,transparent 1px);background-size:56px 56px}
 .people-hero-inner{position:relative;z-index:1}
 .org-section{padding:80px 32px;background:var(--navy)}
-.org-chart{max-width:900px;margin:48px auto 0;display:flex;flex-direction:column;align-items:center;gap:0}
-.org-row{display:flex;justify-content:center;gap:20px;width:100%;position:relative;padding:20px 0}
-.org-row::before{content:'';position:absolute;top:0;left:50%;width:2px;height:20px;background:var(--border);transform:translateX(-50%)}
-.org-row:first-child::before{display:none}
-.org-line{position:absolute;top:0;left:0;right:0;height:2px;background:var(--border)}
-.org-card{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;text-align:center;min-width:140px;transition:border-color .3s}
-.org-card:hover{border-color:var(--gold)}
-.org-card.president{border-color:var(--gold);background:linear-gradient(135deg,var(--navy-card),rgba(232,168,0,.08))}
-.org-card-title{font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.org-card-name{font-size:.9rem;font-weight:700}
-.org-connector{width:2px;background:var(--border);margin:0 auto}
-.org-h-line{width:80%;height:2px;background:var(--border);margin:0 auto}
+/* ── 조직도 트리 ── */
+.org-tree{max-width:960px;margin:52px auto 0;display:flex;flex-direction:column;align-items:center}
+/* 각 행 */
+.org-row{display:flex;justify-content:center;align-items:flex-start;gap:20px;flex-wrap:wrap;position:relative;width:100%}
+/* 수직 연결선 (위→아래) */
+.org-vline{width:2px;height:36px;background:linear-gradient(to bottom,var(--gold),var(--border));margin:0 auto}
+/* 수평 연결선 (형제 노드 연결) */
+.org-hline-wrap{display:flex;justify-content:center;width:100%;position:relative;height:36px}
+.org-hline-wrap::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--border))}
+.org-hline-wrap::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:var(--border)}
+/* 노드 카드 */
+.org-node{display:flex;flex-direction:column;align-items:center}
+.org-node-dot{width:8px;height:8px;border-radius:50%;background:var(--border);margin-bottom:-4px;position:relative;z-index:1}
+.org-node.has-parent .org-node-dot{background:var(--gold-border)}
+.org-card{background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:18px 24px;text-align:center;min-width:130px;transition:all .3s;position:relative;cursor:default}
+.org-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 28px rgba(232,168,0,.12)}
+.org-card.president{border-color:var(--gold);background:linear-gradient(135deg,var(--navy-card),rgba(232,168,0,.1));min-width:160px}
+.org-card.president::after{content:'★';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:.6rem;padding:2px 8px;border-radius:10px;font-weight:800;letter-spacing:.05em}
+.org-card-role{font-size:.65rem;font-weight:800;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.org-card-name{font-size:1rem;font-weight:800;color:var(--white)}
+.org-card-sub{font-size:.72rem;color:var(--grey);margin-top:4px;font-family:'Noto Sans KR',sans-serif}
+/* 팀 카드 (하단 열) */
+.org-card.team{min-width:148px;border-style:dashed}
+.org-card.team .org-card-role{color:var(--grey)}
+.org-card.team:hover{border-color:var(--gold);border-style:solid}
 .members-section{padding:80px 32px;background:var(--navy-2)}
+.member-section-label{display:flex;align-items:center;gap:16px;margin:0 0 28px}
+.member-section-label span{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.member-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.cohort-tabs{display:flex;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+.cohort-tab{padding:10px 28px;border-radius:50px;font-size:.85rem;font-weight:700;letter-spacing:.08em;font-family:'Syne',sans-serif;border:1.5px solid var(--border);background:transparent;color:var(--grey);cursor:pointer;transition:all .25s}
+.cohort-tab:hover{border-color:var(--gold);color:var(--gold)}
+.cohort-tab.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
 .dept-group{margin-bottom:56px}
 .dept-group-title{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;padding:10px 0;border-bottom:1px solid var(--border)}
 .members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
 .member-card{background:var(--navy-card);border:1px solid var(--border);border-radius:10px;padding:20px 16px;text-align:center;transition:transform .25s,border-color .25s}
 .member-card:hover{transform:translateY(-3px);border-color:var(--gold)}
-.member-avatar{width:52px;height:52px;border-radius:50%;background:var(--gold-dim);border:1.5px solid var(--gold-border);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold)}
+.member-card.member-leader{border-color:var(--gold-border);background:linear-gradient(135deg,var(--navy-card),rgba(232,168,0,.06))}
+.member-avatar{width:52px;height:52px;border-radius:50%;background:var(--gold-dim);border:1.5px solid var(--gold-border);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.member-avatar.leader-avatar{width:58px;height:58px;border:2px solid var(--gold);box-shadow:0 0 12px rgba(232,168,0,.25)}
 .member-name{font-size:.88rem;font-weight:700;margin-bottom:3px}
 .member-dept{font-size:.72rem;color:var(--grey);letter-spacing:.06em}
+.member-role{font-size:.72rem;color:var(--grey);letter-spacing:.06em}
+.member-role.leader-role{color:var(--gold);font-weight:700;letter-spacing:.08em}
 /* ─────────────────────────────────────
    PAGE 4: RESEARCH
 ───────────────────────────────────── */
@@ -447,8 +506,8 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
   <button class="mob-close" onclick="toggleMob()">✕</button>
   <!-- 모바일 언어 토글 -->
   <div style="display:flex;gap:0;margin-bottom:24px;background:var(--navy-light);border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content">
-    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s" id="mob-lang-ko" class="on" onclick="setLang('ko')" style="background:var(--gold);color:var(--navy)">KO</button>
-    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s;background:none;color:var(--grey)" id="mob-lang-en" onclick="setLang('en')">EN</button>
+    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s;background:var(--gold);color:var(--navy)" id="mob-lang-ko" class="on" onclick="setLang('ko')">KO</button>
+    <button style="padding:10px 20px;font-size:.8rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s;background:transparent;color:var(--grey)" id="mob-lang-en" onclick="setLang('en')">EN</button>
   </div>
   <button class="mob-nav-btn" onclick="goto('home');toggleMob()" data-ko="홈" data-en="Home">홈</button>
   <button class="mob-nav-btn" onclick="goto('about');toggleMob()" data-ko="소개" data-en="About Us">소개</button>
@@ -456,7 +515,6 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
   <button class="mob-nav-btn" onclick="goto('research');toggleMob()" data-ko="리서치" data-en="Research">리서치</button>
   <button class="mob-nav-btn" onclick="goto('activity');toggleMob()" data-ko="활동" data-en="Activity">활동</button>
   <button class="mob-nav-btn" onclick="goto('contact');toggleMob()" data-ko="문의하기" data-en="Contact Us">문의하기</button>
-  <button class="mob-nav-btn" onclick="goto('apply');toggleMob()" data-ko="지원하기" data-en="Apply">지원하기</button>
   <button class="mob-apply" onclick="goto('apply');toggleMob()" data-ko="지원하기 →" data-en="Apply Now →">지원하기 →</button>
 </div>
 
@@ -487,19 +545,9 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 </div>
 
 <div class="ticker-wrap" id="tickerWrap">
-  <div class="ticker-inner">
-    <span class="ticker-item">B테크, 코스닥 상장 예비심사 통과</span>
-    <span class="ticker-item">C자산운용, 500억 규모 메자닌 펀드 조성</span>
-    <span class="ticker-item">D은행, 혁신금융서비스 지정</span>
-    <span class="ticker-item">E바이오, 1000억 프리IPO 투자 유치</span>
-    <span class="ticker-item">F증권, 2026 하반기 IB부문 채용 공고</span>
-    <span class="ticker-item">G캐피탈, 부동산 PF 구조조정 착수</span>
-    <span class="ticker-item">B테크, 코스닥 상장 예비심사 통과</span>
-    <span class="ticker-item">C자산운용, 500억 규모 메자닌 펀드 조성</span>
-    <span class="ticker-item">D은행, 혁신금융서비스 지정</span>
-    <span class="ticker-item">E바이오, 1000억 프리IPO 투자 유치</span>
-    <span class="ticker-item">F증권, 2026 하반기 IB부문 채용 공고</span>
-    <span class="ticker-item">G캐피탈, 부동산 PF 구조조정 착수</span>
+  <div class="ticker-inner" id="tickerInner">
+    <!-- 뉴스 자동 로딩 중... JS로 채워짐 -->
+    <span class="ticker-item">🔄 실시간 금융 뉴스 불러오는 중...</span>
   </div>
 </div>
 
@@ -508,6 +556,10 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
   <div class="hero-inner">
     <div class="hero-label">Your Base for Finance</div>
     <h1 class="hero-h">
@@ -520,7 +572,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
     </div>
     <div class="hero-stats">
       <div class="hs-item"><div class="hs-num">50<sup style="font-size:1.2rem">+</sup></div><div class="hs-label">멤버</div></div>
-      <div class="hs-item"><div class="hs-num">4</div><div class="hs-label">부서</div></div>
+      <div class="hs-item"><div class="hs-num">5</div><div class="hs-label">부서</div></div>
       <div class="hs-item"><div class="hs-num">20<sup style="font-size:1.2rem">+</sup></div><div class="hs-label">리포트</div></div>
       <div class="hs-item"><div class="hs-num">3</div><div class="hs-label">기수</div></div>
     </div>
@@ -557,16 +609,17 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
       <div class="stat-big fu"><div class="stat-big-num">1기</div><div class="stat-big-label" id="stat-big-label-el">2026년 봄학기 시작 · 현재 운영 중</div></div>
       <div class="stat-row">
         <div class="stat-sm fu fd1"><div class="stat-sm-num">50+</div><div class="stat-sm-label">Active Members</div></div>
-        <div class="stat-sm fu fd2"><div class="stat-sm-num">4</div><div class="stat-sm-label">Departments</div></div>
+        <div class="stat-sm fu fd2"><div class="stat-sm-num">5</div><div class="stat-sm-label">Departments</div></div>
       </div>
       <div class="val-card fu fd3" style="padding:28px">
         <div class="val-icon">🏢</div>
-        <div class="val-title" id="dept-title-el" style="font-size:.95rem;margin-bottom:10px">4개 팀 구성</div>
+        <div class="val-title" id="dept-title-el" style="font-size:.95rem;margin-bottom:10px">5개 팀 구성</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <div id="dept-1-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">📈 리서치 1팀 — Capital Markets & Real Estate PF</div>
-          <div id="dept-2-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">💹 리서치 2팀 — Corporate M&A & IPO</div>
-          <div id="dept-3-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🌐 콘텐츠/홍보팀 — Insight Publishing</div>
-          <div id="dept-4-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🤝 이벤트 기획팀 — Networking & Events</div>
+          <div id="dept-1-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">📊 리서치 기업산업분석팀 — Industry & Corporate Analysis</div>
+          <div id="dept-2-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">📈 리서치 IPO팀 — IPO & Valuation</div>
+          <div id="dept-3-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">📚 리서치 교육팀 — Finance Education</div>
+          <div id="dept-4-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🌐 콘텐츠팀 — Content & Publishing</div>
+          <div id="dept-5-el" style="font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">🤝 이벤트팀 — Networking & Events</div>
         </div>
       </div>
     </div>
@@ -604,6 +657,12 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
     <div class="eyebrow fu" id="mem-eyebrow-el">All Members</div>
     <h2 class="section-h fu fd1" id="mem-h-el">전체 <span class="g">멤버</span></h2>
     <div class="divider-line fu fd2"></div>
+    <!-- 기수 탭 -->
+    <div class="cohort-tabs fu fd2">
+      <button class="cohort-tab on" onclick="switchCohort(1, this)">1기</button>
+      <button class="cohort-tab" onclick="switchCohort(2, this)">2기</button>
+      <button class="cohort-tab" onclick="switchCohort(3, this)">3기</button>
+    </div>
     <div id="membersList"></div>
   </div>
 </div>
@@ -686,9 +745,9 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
     <div class="divider-line fu fd2"></div>
     <div class="contact-grid">
       <div>
-        <a class="contact-info-item fu" href="mailto:finbase@example.com" style="text-decoration:none">
+        <a class="contact-info-item fu" href="mailto:gmufinbase@gmail.com" style="text-decoration:none">
           <div class="ci-icon">✉️</div>
-          <div class="ci-text"><h4>Email</h4><p>finbase@gm.gist.ac.kr</p><span id="contact-email-sub-el">학회 공식 이메일로 문의해주세요</span></div>
+          <div class="ci-text"><h4>Email</h4><p>gmufinbase@gmail.com</p><span id="contact-email-sub-el">학회 공식 이메일로 문의해주세요</span></div>
         </a>
         <a class="contact-info-item fu fd1" href="https://www.instagram.com/finbase_/" target="_blank" style="text-decoration:none">
           <div class="ci-icon">📸</div>
@@ -912,18 +971,18 @@ let currentLang = localStorage.getItem('fb_lang') || 'ko';
 const LANG = {
   // NAV
   'nb-home':      {ko:'홈',       en:'Home'},
-  'nb-about':     {ko:'소개',     en:'About Us'},
-  'nb-people':    {ko:'멤버',     en:'Our People'},
+  'nb-about':     {ko:'소개',     en:'About'},
+  'nb-people':    {ko:'멤버',     en:'People'},
   'nb-research':  {ko:'리서치',   en:'Research'},
   'nb-activity':  {ko:'활동',     en:'Activity'},
-  'nb-contact':   {ko:'문의',     en:'Contact Us'},
+  'nb-contact':   {ko:'문의',     en:'Contact'},
   'nb-apply':     {ko:'지원',     en:'Apply'},
   // BTN
   'apply-cta':    {ko:'지원하기', en:'Apply Now'},
   // HOME
   'hero-label':   {ko:'Your Base for Finance', en:'Your Base for Finance'},
-  'hero-h1':      {ko:'금융의 세계를\n탐험하세요.\n<em>Finance.</em>', en:'Explore the\nWorld of\n<em>Finance.</em>'},
-  'hero-desc':    {ko:'여의도 및 글로벌 금융 현장과 가장 가까운 학회.<br>M&A, IPO, Real Estate PF를 직접 연구하고<br>금융 커리어의 첫 발을 내딛으세요.', en:'The academic club closest to the real world of finance.<br>Research M&A, IPO, Real Estate PF firsthand<br>and take your first step toward a finance career.'},
+  'hero-h1':      {ko:'금융의 세계를\n탐험하세요.\n<em>Finance.</em>', en:'Where Finance\nBegins.\n<em>FINBASE.</em>'},
+  'hero-desc':    {ko:'여의도 및 글로벌 금융 현장과 가장 가까운 학회.<br>M&A, IPO, Real Estate PF를 직접 연구하고<br>금융 커리어의 첫 발을 내딛으세요.', en:'Get closer to the world of finance than any classroom can take you.<br>Dive into real M&A deals, IPOs, and Real Estate PF —<br>and start building the career you actually want.'},
   'hero-btn1':    {ko:'FINBASE 알아보기', en:'DISCOVER FINBASE'},
   'hero-btn2':    {ko:'지원하기 →', en:'Apply Now →'},
   'hs-label-1':   {ko:'멤버', en:'Members'},
@@ -931,70 +990,70 @@ const LANG = {
   'hs-label-3':   {ko:'리포트', en:'Reports'},
   'hs-label-4':   {ko:'기수', en:'Cohorts'},
   // ABOUT
-  'about-eyebrow':  {ko:'About FINBASE', en:'About FINBASE'},
-  'about-h1':       {ko:'금융의 <span class="g">베이스캠프</span>', en:'Your Base for <span class="g">Finance</span>'},
-  'about-sub':      {ko:'실무 금융인과 협력하며 실제 딜을 다루는 대학 금융 학회', en:'A university finance club working alongside industry professionals on real deals'},
-  'mission-eyebrow':{ko:'Our Mission', en:'Our Mission'},
-  'mission-h':      {ko:'우리가 <span class="g">만드는</span><br>금융 커리어', en:'Building Your<br><span class="g">Finance</span> Career'},
-  'mission-p1':     {ko:'FINBASE는 단순한 스터디 그룹이 아닙니다. 여의도 IB, 자산운용사 현직자와 함께 실제 딜을 분석하고, 직접 리서치 레포트를 발행하며, 금융 커리어에 필요한 실전 역량을 키우는 공간입니다.', en:'FINBASE is more than a study group. We analyze real deals with IB and asset management professionals, publish research reports, and build the practical skills needed for a finance career.'},
-  'mission-p2':     {ko:'우리는 M&A, IPO, 부동산 PF 등 실물 금융 전반을 다루며, 학술적 깊이와 실무 감각을 동시에 추구합니다.', en:'We cover M&A, IPO, Real Estate PF and more — pursuing both academic depth and real-world intuition.'},
-  'val1-t':         {ko:'Real Deal Study', en:'Real Deal Study'},
-  'val1-d':         {ko:'실제 거래 케이스 기반 학습', en:'Case-based learning from real transactions'},
-  'val2-t':         {ko:'Expert Network', en:'Expert Network'},
-  'val2-d':         {ko:'여의도 현직자 멘토링', en:'Mentorship from Yeouido professionals'},
-  'val3-t':         {ko:'Research Pub', en:'Research Pub'},
-  'val3-d':         {ko:'리서치 레포트 공식 발행', en:'Official research report publication'},
-  'val4-t':         {ko:'Competition', en:'Competition'},
-  'val4-d':         {ko:'금융 공모전 팀 지원', en:'Finance competition team support'},
-  'stat-big-label': {ko:'2026년 봄학기 시작 · 현재 운영 중', en:'Started Spring 2026 · Currently Active'},
-  'dept-title':     {ko:'4개 팀 구성', en:'4 Departments'},
+  'about-eyebrow':  {ko:'FINBASE 소개', en:'About FINBASE'},
+  'about-h1':       {ko:'금융의 <span class="g">베이스캠프</span>', en:'Finance Starts <span class="g">Here</span>'},
+  'about-sub':      {ko:'실무 금융인과 협력하며 실제 딜을 다루는 대학 금융 학회', en:'A student-run finance club that works on real deals alongside industry professionals'},
+  'mission-eyebrow':{ko:'우리의 미션', en:'Our Mission'},
+  'mission-h':      {ko:'우리가 <span class="g">만드는</span><br>금융 커리어', en:'Your Finance Career,<br><span class="g">Built Here</span>'},
+  'mission-p1':     {ko:'FINBASE는 단순한 스터디 그룹이 아닙니다. 여의도 IB, 자산운용사 현직자와 함께 실제 딜을 분석하고, 직접 리서치 레포트를 발행하며, 금융 커리어에 필요한 실전 역량을 키우는 공간입니다.', en:'FINBASE is not your typical study group. We sit down with active professionals from Yeouido\'s IB and asset management firms, dig into live deals, publish our own research, and develop the hands-on skills that actually matter in finance.'},
+  'mission-p2':     {ko:'우리는 M&A, IPO, 부동산 PF 등 실물 금융 전반을 다루며, 학술적 깊이와 실무 감각을 동시에 추구합니다.', en:'From M&A and IPOs to Real Estate PF, we cover the full spectrum of finance — blending academic rigor with real-world instinct.'},
+  'val1-t':         {ko:'실전 딜 스터디', en:'Real Deal Study'},
+  'val1-d':         {ko:'실제 거래 케이스 기반 학습', en:'Learn from live transactions, not textbook examples'},
+  'val2-t':         {ko:'전문가 네트워크', en:'Expert Network'},
+  'val2-d':         {ko:'여의도 현직자 멘토링', en:'Direct mentorship from Yeouido finance professionals'},
+  'val3-t':         {ko:'리서치 발행', en:'Research Publication'},
+  'val3-d':         {ko:'리서치 레포트 공식 발행', en:'Publish your own research — and own your portfolio'},
+  'val4-t':         {ko:'공모전 참가', en:'Competition'},
+  'val4-d':         {ko:'금융 공모전 팀 지원', en:'Team up and compete in national finance competitions'},
+  'stat-big-label': {ko:'2026년 봄학기 시작 · 현재 운영 중', en:'Launched Spring 2026 · Now Active'},
+  'dept-title':     {ko:'5개 팀 구성', en:'Five Teams, One Mission'},
   'dept-1':         {ko:'📈 리서치 1팀 — Capital Markets & Real Estate PF', en:'📈 Research Team 1 — Capital Markets & Real Estate PF'},
   'dept-2':         {ko:'💹 리서치 2팀 — Corporate M&A & IPO', en:'💹 Research Team 2 — Corporate M&A & IPO'},
-  'dept-3':         {ko:'🌐 콘텐츠/홍보팀 — Insight Publishing', en:'🌐 Content/PR Team — Insight Publishing'},
+  'dept-3':         {ko:'🌐 콘텐츠/홍보팀 — Insight Publishing', en:'🌐 Content & PR — Insight Publishing'},
   'dept-4':         {ko:'🤝 이벤트 기획팀 — Networking & Events', en:'🤝 Events Team — Networking & Events'},
-  'officer-eyebrow':{ko:'Leadership', en:'Leadership'},
-  'officer-h':      {ko:'임원진 <span class="g">소개</span>', en:'Meet the <span class="g">Leadership</span>'},
+  'officer-eyebrow':{ko:'임원진', en:'Leadership'},
+  'officer-h':      {ko:'임원진 <span class="g">소개</span>', en:'Meet the <span class="g">Team</span>'},
   // PEOPLE
-  'people-eyebrow': {ko:'Our People', en:'Our People'},
-  'people-h1':      {ko:'FINBASE의 <span class="g">모든 멤버</span>', en:'All <span class="g">Members</span>'},
-  'people-sub':     {ko:'함께 금융을 공부하고 성장하는 FINBASE 1기 멤버들입니다.', en:'FINBASE 1st cohort members studying and growing together in finance.'},
-  'org-eyebrow':    {ko:'Organization', en:'Organization'},
-  'org-h':          {ko:'조직도 <span class="g">Chart</span>', en:'Org <span class="g">Chart</span>'},
-  'mem-eyebrow':    {ko:'All Members', en:'All Members'},
+  'people-eyebrow': {ko:'우리 멤버', en:'Our People'},
+  'people-h1':      {ko:'FINBASE의 <span class="g">모든 멤버</span>', en:'The People Behind <span class="g">FINBASE</span>'},
+  'people-sub':     {ko:'함께 금융을 공부하고 성장하는 FINBASE 1기 멤버들입니다.', en:'Meet the founding cohort — students who chose to learn finance by doing it.'},
+  'org-eyebrow':    {ko:'조직 구성', en:'Organization'},
+  'org-h':          {ko:'조직도 <span class="g">Chart</span>', en:'How We\'re <span class="g">Organized</span>'},
+  'mem-eyebrow':    {ko:'전체 멤버', en:'All Members'},
   'mem-h':          {ko:'전체 <span class="g">멤버</span>', en:'Full <span class="g">Roster</span>'},
   // RESEARCH
-  'res-eyebrow':    {ko:'Research', en:'Research'},
+  'res-eyebrow':    {ko:'리서치', en:'Research'},
   'res-h1':         {ko:'FINBASE <span class="g">Research</span>', en:'FINBASE <span class="g">Research</span>'},
-  'res-sub':        {ko:'팀이 직접 작성한 금융 리서치 레포트를 발행합니다', en:'Finance research reports authored directly by our teams'},
+  'res-sub':        {ko:'팀이 직접 작성한 금융 리서치 레포트를 발행합니다', en:'Original research reports, written and published by our own teams'},
   // ACTIVITY
-  'act-eyebrow':    {ko:'Activity Archive', en:'Activity Archive'},
-  'act-h1':         {ko:'OUR <span class="g">ACTIVITY</span>', en:'OUR <span class="g">ACTIVITY</span>'},
-  'act-sub':        {ko:'FINBASE의 모든 활동을 기록합니다', en:'A record of all FINBASE activities'},
+  'act-eyebrow':    {ko:'활동 아카이브', en:'Activity Archive'},
+  'act-h1':         {ko:'우리의 <span class="g">활동</span>', en:'OUR <span class="g">ACTIVITY</span>'},
+  'act-sub':        {ko:'FINBASE의 모든 활동을 기록합니다', en:'Everything we\'ve done — documented and archived'},
   'act-tab1':       {ko:'📚 주차별 활동', en:'📚 Weekly Sessions'},
   'act-tab2':       {ko:'🎉 이벤트 & 블로그', en:'🎉 Events & Blog'},
   // CONTACT
-  'contact-eyebrow':{ko:'Get In Touch', en:'Get In Touch'},
-  'contact-h1':     {ko:'Contact <span class="g">Us</span>', en:'Contact <span class="g">Us</span>'},
-  'contact-email-sub':{ko:'학회 공식 이메일로 문의해주세요', en:'Reach out via our official email'},
-  'contact-ig-sub': {ko:'최신 활동 및 소식을 팔로우하세요', en:'Follow us for latest updates'},
-  'contact-loc-sub':{ko:'인천 연수구 송도동', en:'Songdo, Yeonsu-gu, Incheon'},
-  'contact-form-h': {ko:'메시지 <span style="color:var(--gold)">보내기</span>', en:'Send a <span style="color:var(--gold)">Message</span>'},
-  'contact-form-p': {ko:'궁금한 점이 있으시면 언제든지 연락주세요.', en:'Feel free to reach out anytime.'},
+  'contact-eyebrow':{ko:'문의하기', en:'Get In Touch'},
+  'contact-h1':     {ko:'Contact <span class="g">Us</span>', en:'Say <span class="g">Hello</span>'},
+  'contact-email-sub':{ko:'학회 공식 이메일로 문의해주세요', en:'Drop us a line at our official club email'},
+  'contact-ig-sub': {ko:'최신 활동 및 소식을 팔로우하세요', en:'Follow along for updates, events, and behind-the-scenes'},
+  'contact-loc-sub':{ko:'인천 연수구 송도동', en:'Songdo, Incheon — George Mason Korea'},
+  'contact-form-h': {ko:'메시지 <span style="color:var(--gold)">보내기</span>', en:'Send Us a <span style="color:var(--gold)">Message</span>'},
+  'contact-form-p': {ko:'궁금한 점이 있으시면 언제든지 연락주세요.', en:'Have a question or just want to say hi? We\'d love to hear from you.'},
   'form-name-lbl':  {ko:'이름', en:'Name'},
   'form-email-lbl': {ko:'이메일', en:'Email'},
   'form-msg-lbl':   {ko:'메시지', en:'Message'},
-  'form-name-ph':   {ko:'이름을 입력하세요', en:'Your Name'},
-  'form-email-ph':  {ko:'이메일을 입력하세요', en:'your@email.com'},
-  'form-msg-ph':    {ko:'문의 내용을 입력해주세요...', en:'Write your message here...'},
+  'form-name-ph':   {ko:'이름을 입력하세요', en:'Your name'},
+  'form-email-ph':  {ko:'이메일을 입력하세요', en:'you@example.com'},
+  'form-msg-ph':    {ko:'문의 내용을 입력해주세요...', en:'What\'s on your mind?'},
   'contact-btn':    {ko:'메시지 보내기', en:'Send Message'},
   // APPLY
-  'apply-h1':       {ko:'FINBASE에<br><span class="g">지원하기</span>', en:'Join<br><span class="g">FINBASE</span>'},
-  'apply-desc':     {ko:'FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.', en:'FINBASE welcomes any student with a serious interest in finance.<br>Applications open every semester.'},
-  'apply-closed-t': {ko:'2026년 봄학기 모집 마감', en:'Spring 2026 Applications Closed'},
-  'apply-closed-d': {ko:'현재 2026년 봄학기 지원이 마감되었습니다.<br>다음 모집은 2026년 가을학기에 진행될 예정입니다.<br>인스타그램 팔로우를 통해 모집 공고를 받아보세요.', en:'Applications for Spring 2026 are now closed.<br>The next recruitment will be for Fall 2026.<br>Follow us on Instagram to stay updated.'},
-  'apply-next-h':   {ko:'다음 모집 예정', en:'Next Recruitment'},
-  'apply-next-p':   {ko:'2026년 가을학기 모집이 예정되어 있습니다. Instagram <strong>@finbase_</strong> 을 팔로우하면 모집 공고를 가장 빠르게 받아볼 수 있습니다.', en:'Fall 2026 recruitment is coming. Follow <strong>@finbase_</strong> on Instagram to get notified first.'},
-  'apply-contact-btn':{ko:'문의하기 →', en:'Contact Us →'},
+  'apply-h1':       {ko:'FINBASE에<br><span class="g">지원하기</span>', en:'Ready to Join<br><span class="g">FINBASE?</span>'},
+  'apply-desc':     {ko:'FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.', en:'If you\'re serious about finance, FINBASE is for you.<br>We recruit new members every semester — no prior experience required.'},
+  'apply-closed-t': {ko:'2026년 봄학기 모집 마감', en:'Spring 2026 Recruitment — Closed'},
+  'apply-closed-d': {ko:'현재 2026년 봄학기 지원이 마감되었습니다.<br>다음 모집은 2026년 가을학기에 진행될 예정입니다.<br>인스타그램 팔로우를 통해 모집 공고를 받아보세요.', en:'We\'ve wrapped up recruitment for Spring 2026.<br>Our next round opens for Fall 2026 — stay tuned.<br>Follow us on Instagram so you don\'t miss the announcement.'},
+  'apply-next-h':   {ko:'다음 모집 예정', en:'Coming Up: Fall 2026'},
+  'apply-next-p':   {ko:'2026년 가을학기 모집이 예정되어 있습니다. Instagram <strong>@finbase_</strong> 을 팔로우하면 모집 공고를 가장 빠르게 받아볼 수 있습니다.', en:'Fall 2026 recruitment is on its way. Follow <strong>@finbase_</strong> on Instagram and you\'ll be the first to know when applications open.'},
+  'apply-contact-btn':{ko:'문의하기 →', en:'Get in Touch →'},
   // FOOTER
   'footer-copy':    {ko:'© 2026 FINBASE Academic Club. All rights reserved.', en:'© 2026 FINBASE Academic Club. All rights reserved.'},
 };
@@ -1041,9 +1100,30 @@ function setLang(lang) {
 function T(key){ return LANG[key] ? LANG[key][currentLang] : ''; }
 
 function applyLangToPage(){
-  // HOME
+  const lang = currentLang;
+
+  // ── HEADER & NAV ─────────────────────────────
+  // 데스크탑 nav 버튼
+  ['home','about','people','research','activity','contact','apply'].forEach(p => {
+    const btn = document.getElementById('nb-'+p);
+    if(btn) btn.textContent = T('nb-'+p);
+  });
+  // 모바일 nav 버튼 (data-ko/data-en)
+  document.querySelectorAll('.mob-nav-btn[data-ko]').forEach(el => {
+    el.textContent = el.getAttribute('data-'+lang) || el.textContent;
+  });
+  // 지원하기 버튼들
+  document.querySelectorAll('[data-ko][data-en]').forEach(el => {
+    const val = el.getAttribute('data-'+lang);
+    if(val) el.textContent = val;
+  });
+  // header CTA
+  const ctaBtn = document.querySelector('.btn-apply-header');
+  if(ctaBtn) ctaBtn.textContent = T('apply-cta');
+
+  // ── HOME ─────────────────────────────────────
   const heroLabel = document.querySelector('.hero-label');
-  if(heroLabel) heroLabel.innerHTML = (heroLabel.innerHTML.includes('●') ? '<span style="width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>' : '') + T('hero-label');
+  if(heroLabel) heroLabel.textContent = T('hero-label');
 
   const heroH = document.querySelector('.hero-h');
   if(heroH) heroH.innerHTML = T('hero-h1').replace(/\n/g,'<br>');
@@ -1061,7 +1141,7 @@ function applyLangToPage(){
     if(hsLabels[i]) hsLabels[i].textContent = T(k);
   });
 
-  // ABOUT
+  // ── ABOUT ────────────────────────────────────
   setById('about-eyebrow-el', T('about-eyebrow'));
   setInnerById('about-h1-el', T('about-h1'));
   setById('about-sub-el', T('about-sub'));
@@ -1069,10 +1149,20 @@ function applyLangToPage(){
   setInnerById('mission-h-el', T('mission-h'));
   setById('mission-p1-el', T('mission-p1'));
   setById('mission-p2-el', T('mission-p2'));
+  // val 카드들
+  ['val1','val2','val3','val4'].forEach(k => {
+    setById(k+'-t-el', T(k+'-t'));
+    setById(k+'-d-el', T(k+'-d'));
+  });
+  // 통계
+  setById('stat-big-label-el', T('stat-big-label'));
+  // 팀 구성
+  setById('dept-title-el', T('dept-title'));
+  ['1','2','3','4','5'].forEach(n => setById('dept-'+n+'-el', T('dept-'+n)));
   setInnerById('officer-eyebrow-el', T('officer-eyebrow'));
   setInnerById('officer-h-el', T('officer-h'));
 
-  // PEOPLE
+  // ── PEOPLE ───────────────────────────────────
   setById('people-eyebrow-el', T('people-eyebrow'));
   setInnerById('people-h1-el', T('people-h1'));
   setById('people-sub-el', T('people-sub'));
@@ -1081,19 +1171,19 @@ function applyLangToPage(){
   setById('mem-eyebrow-el', T('mem-eyebrow'));
   setInnerById('mem-h-el', T('mem-h'));
 
-  // RESEARCH
+  // ── RESEARCH ─────────────────────────────────
   setById('res-eyebrow-el', T('res-eyebrow'));
   setInnerById('res-h1-el', T('res-h1'));
   setById('res-sub-el', T('res-sub'));
 
-  // ACTIVITY
+  // ── ACTIVITY ─────────────────────────────────
   setById('act-eyebrow-el', T('act-eyebrow'));
   setInnerById('act-h1-el', T('act-h1'));
   setById('act-sub-el', T('act-sub'));
   setInnerById('act-tab1-el', T('act-tab1'));
   setInnerById('act-tab2-el', T('act-tab2'));
 
-  // CONTACT
+  // ── CONTACT ──────────────────────────────────
   setById('contact-eyebrow-el', T('contact-eyebrow'));
   setInnerById('contact-h1-el', T('contact-h1'));
   setById('contact-email-sub-el', T('contact-email-sub'));
@@ -1109,7 +1199,7 @@ function applyLangToPage(){
   setAttr('form-msg-inp', 'placeholder', T('form-msg-ph'));
   setById('contact-btn-el', T('contact-btn'));
 
-  // APPLY
+  // ── APPLY ────────────────────────────────────
   setInnerById('apply-h1-el', T('apply-h1'));
   setInnerById('apply-desc-el', T('apply-desc'));
   setById('apply-closed-t-el', T('apply-closed-t'));
@@ -1117,6 +1207,10 @@ function applyLangToPage(){
   setById('apply-next-h-el', T('apply-next-h'));
   setInnerById('apply-next-p-el', T('apply-next-p'));
   setById('apply-contact-btn-el', T('apply-contact-btn'));
+
+  // ── FOOTER ───────────────────────────────────
+  const footerCopy = document.querySelector('.footer-copy');
+  if(footerCopy) footerCopy.textContent = T('footer-copy');
 }
 
 function setById(id, val){ const el=document.getElementById(id); if(el&&val) el.textContent=val; }
@@ -1138,21 +1232,86 @@ const PER=6;
 
 /* ══════════ STATIC DATA ══════════ */
 const officers=[
-  {name:'홍길동',role:'회장',dept:'전체'},
-  {name:'김영희',role:'부회장',dept:'리서치 1팀'},
-  {name:'이철수',role:'팀장',dept:'리서치 1팀'},
-  {name:'박민지',role:'팀장',dept:'리서치 2팀'},
-  {name:'최준혁',role:'팀장',dept:'콘텐츠/홍보팀'},
-  {name:'정소연',role:'팀장',dept:'이벤트 기획팀'},
-  {name:'강동원',role:'총무',dept:'전체'},
-  {name:'윤서아',role:'서기',dept:'전체'},
+  {name:'정래현',role:'회장',dept:''},
+  {name:'박현민',role:'부회장',dept:''},
+  {name:'이다현',role:'총무',dept:''},
+  {name:'김민준',role:'서기',dept:''},
 ];
-const allMembers={
-  '리서치 1팀':['이철수','김민준','박서연','조현우','유나경','송태양'],
-  '리서치 2팀':['박민지','한지수','오승환','임채원','전민서','백수진'],
-  '콘텐츠/홍보팀':['최준혁','문지훈','신예진','이다은','황성민'],
-  '이벤트 기획팀':['정소연','권태호','남궁서아','안지호','배지현'],
+const cohortMembers = {
+  1: {
+    'Research — 기업산업분석팀': [
+      {name:'김민준', role:'팀장'},
+      {name:'김종우', role:'팀원'},
+      {name:'조민서', role:'팀원'},
+      {name:'전도현', role:'팀원'},
+      {name:'전아원', role:'팀원'},
+    ],
+    'Research — IPO팀':          [],
+    'Research — 교육팀':         [],
+    '콘텐츠팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'이지원', role:'팀장'},
+      {name:'이정우', role:'매니저'},
+      {name:'한선규', role:'팀원'},
+      {name:'이유나', role:'팀원'},
+    ],
+    '이벤트팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'최윤수', role:'팀장'},
+      {name:'최동훈', role:'매니저'},
+      {name:'서원',   role:'팀원'},
+      {name:'이효원', role:'팀원'},
+      {name:'유영선', role:'팀원'},
+    ],
+  },
+  2: {
+    'Research — 기업산업분석팀': [],
+    'Research — IPO팀':          [],
+    'Research — 교육팀':         [],
+    '콘텐츠팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'이지원', role:'팀장'},
+      {name:'이정우', role:'매니저'},
+      {name:'한선규', role:'팀원'},
+      {name:'이유나', role:'팀원'},
+    ],
+    '이벤트팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'최윤수', role:'팀장'},
+      {name:'최동훈', role:'매니저'},
+      {name:'서원',   role:'팀원'},
+      {name:'이효원', role:'팀원'},
+      {name:'유영선', role:'팀원'},
+    ],
+  },
+  3: {
+    'Research — 기업산업분석팀': [],
+    'Research — IPO팀':          [],
+    'Research — 교육팀':         [],
+    '콘텐츠팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'이지원', role:'팀장'},
+      {name:'이정우', role:'매니저'},
+      {name:'한선규', role:'팀원'},
+      {name:'이유나', role:'팀원'},
+    ],
+    '이벤트팀': [
+      {name:'이다현', role:'부장'},
+      {name:'김민준', role:'부장'},
+      {name:'최윤수', role:'팀장'},
+      {name:'최동훈', role:'매니저'},
+      {name:'서원',   role:'팀원'},
+      {name:'이효원', role:'팀원'},
+      {name:'유영선', role:'팀원'},
+    ],
+  },
 };
+let currentCohort = 1;
 
 /* ══════════ NAV ══════════ */
 function goto(page){
@@ -1164,6 +1323,7 @@ function goto(page){
   window.scrollTo({top:0,behavior:'smooth'});
   // FAB는 항상 표시 (관리자 모드 여부 무관)
   document.getElementById('adminFab').classList.add('show');
+  if(page==='home'){ setTimeout(initHeroEffects, 100); }
   if(page==='about')renderOfficers();
   if(page==='people'){renderOrgChart();renderMembers();}
   if(page==='research')renderRes();
@@ -1296,7 +1456,12 @@ function showToast(msg, type='success'){
 function renderOfficers(){
   document.getElementById('officersGrid').innerHTML=officers.map(o=>`
     <div class="officer-card fu">
-      <div class="officer-avatar">${o.name[0]}</div>
+      <div class="officer-avatar">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52%;height:52%;opacity:.85">
+          <circle cx="12" cy="8" r="4" fill="currentColor"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/>
+        </svg>
+      </div>
       <div class="officer-name">${o.name}</div>
       <div class="officer-role">${o.role}</div>
       <div class="officer-dept">${o.dept}</div>
@@ -1308,39 +1473,137 @@ function renderOfficers(){
 function renderOrgChart(){
   const chart=document.getElementById('orgChart');
   chart.innerHTML=`
-    <div style="display:flex;justify-content:center;padding-bottom:0">
-      <div class="org-card president"><div class="org-card-title">회장</div><div class="org-card-name">홍길동</div></div>
+  <div class="org-tree">
+
+    <!-- 1단: 회장 -->
+    <div class="org-row">
+      <div class="org-node">
+        <div class="org-card president">
+          <div class="org-card-role">회장</div>
+          <div class="org-card-name">정래현</div>
+        </div>
+      </div>
     </div>
-    <div style="width:2px;height:32px;background:var(--border);margin:0 auto"></div>
-    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
-      <div class="org-card"><div class="org-card-title">부회장</div><div class="org-card-name">김영희</div></div>
-      <div class="org-card"><div class="org-card-title">총무</div><div class="org-card-name">강동원</div></div>
-      <div class="org-card"><div class="org-card-title">서기</div><div class="org-card-name">윤서아</div></div>
+
+    <!-- 수직선 -->
+    <div class="org-vline"></div>
+
+    <!-- 2단: 부회장·총무·서기 연결 수평선 -->
+    <div class="org-hline-wrap"></div>
+
+    <!-- 2단: 부회장·총무·서기 -->
+    <div class="org-row" style="gap:24px">
+      <div class="org-node has-parent">
+        <div class="org-card">
+          <div class="org-card-role">부회장</div>
+          <div class="org-card-name">박현민</div>
+        </div>
+      </div>
+      <div class="org-node has-parent">
+        <div class="org-card">
+          <div class="org-card-role">총무</div>
+          <div class="org-card-name">이다현</div>
+        </div>
+      </div>
+      <div class="org-node has-parent">
+        <div class="org-card">
+          <div class="org-card-role">서기</div>
+          <div class="org-card-name">김민준</div>
+        </div>
+      </div>
     </div>
-    <div style="width:2px;height:32px;background:var(--border);margin:0 auto"></div>
-    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
-      ${[['리서치 1팀','이철수'],['리서치 2팀','박민지'],['콘텐츠/홍보팀','최준혁'],['이벤트 기획팀','정소연']].map(([dept,name])=>`
-        <div class="org-card"><div class="org-card-title">${dept}</div><div class="org-card-name">${name} 팀장</div></div>`).join('')}
-    </div>`;
+
+    <!-- 수직선 -->
+    <div class="org-vline"></div>
+
+    <!-- 팀 연결 수평선 -->
+    <div class="org-hline-wrap" style="--line-width:80%"></div>
+
+    <!-- 3단: 5개 팀 -->
+    <div class="org-row" style="gap:16px;align-items:flex-start">
+      ${[
+        ['기업산업분석팀','Industry Analysis', 'Research'],
+        ['IPO팀','IPO & Valuation', 'Research'],
+        ['교육팀','Finance Education', 'Research'],
+        ['콘텐츠팀','Content & PR', ''],
+        ['이벤트팀','Networking', ''],
+      ].map(([name, en, prefix]) => `
+      <div class="org-node has-parent">
+        <div class="org-card team">
+          ${prefix ? `<div class="org-card-role">${prefix}</div>` : '<div class="org-card-role" style="opacity:0">-</div>'}
+          <div class="org-card-name" style="font-size:.88rem">${name}</div>
+          <div class="org-card-sub">${en}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+
+  </div>`;
 }
 
 /* ══════════ MEMBERS ══════════ */
-function renderMembers(){
-  const container=document.getElementById('membersList');
-  container.innerHTML=Object.entries(allMembers).map(([dept,members])=>`
-    <div class="dept-group fu">
-      <div class="dept-group-title">${dept}</div>
-      <div class="members-grid">
-        ${members.map(name=>`
-          <div class="member-card">
-            <div class="member-avatar">${name[0]}</div>
-            <div class="member-name">${name}</div>
-            <div class="member-dept">${dept}</div>
-          </div>`).join('')}
-      </div>
-    </div>`).join('');
-  document.querySelectorAll('#membersList .fu').forEach(el=>observer.observe(el));
+function switchCohort(num, btn) {
+  currentCohort = num;
+  document.querySelectorAll('.cohort-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderMembers();
 }
+
+function renderMembers(){
+  const container = document.getElementById('membersList');
+  const data = cohortMembers[currentCohort] || {};
+
+  const researchEntries = Object.entries(data).filter(([k]) => k.startsWith('Research'));
+  const otherEntries    = Object.entries(data).filter(([k]) => !k.startsWith('Research'));
+  const hasAny = Object.values(data).some(m => m.length > 0);
+
+  if (!hasAny) {
+    container.innerHTML = `
+      <div class="empty-box" style="padding:60px 0">
+        <div class="empty-icon">👥</div>
+        <h3>${currentCohort}기 멤버 정보가 준비 중입니다</h3>
+        <p>곧 업데이트될 예정입니다.</p>
+      </div>`;
+    return;
+  }
+
+  function renderMemberCard(m, dept) {
+    const name = typeof m === 'string' ? m : m.name;
+    const role = typeof m === 'string' ? '' : m.role;
+    const isLeader = role === '팀장' || role === '부장';
+    const svgIcon = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:55%;height:55%;opacity:.85"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/></svg>';
+    return '<div class="member-card' + (isLeader ? ' member-leader' : '') + '">'
+      + '<div class="member-avatar' + (isLeader ? ' leader-avatar' : '') + '">' + svgIcon + '</div>'
+      + '<div class="member-name">' + name + '</div>'
+      + (role
+          ? '<div class="member-role' + (isLeader ? ' leader-role' : '') + '">' + role + '</div>'
+          : '<div class="member-dept">' + dept.replace('Research — ','') + '</div>')
+      + '</div>';
+  }
+
+  function renderDeptBlock(dept, members) {
+    return '<div class="dept-group fu">'
+      + '<div class="dept-group-title">' + dept.replace('Research — ','') + '</div>'
+      + '<div class="members-grid">'
+      + members.map(m => renderMemberCard(m, dept)).join('')
+      + '</div></div>';
+  }
+
+  const resFilled   = researchEntries.filter(([,m]) => m.length > 0);
+  const otherFilled = otherEntries.filter(([,m]) => m.length > 0);
+
+  let html = '';
+  if (resFilled.length) {
+    html += '<div class="member-section-label"><span>Research</span></div>';
+    html += resFilled.map(([d,m]) => renderDeptBlock(d, m)).join('');
+  }
+  if (otherFilled.length) {
+    html += '<div class="member-section-label" style="margin-top:48px"><span>Operations</span></div>';
+    html += otherFilled.map(([d,m]) => renderDeptBlock(d, m)).join('');
+  }
+  container.innerHTML = html;
+  document.querySelectorAll('#membersList .fu').forEach(el => observer.observe(el));
+}
+
 
 /* ══════════ UTILS ══════════ */
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -1705,8 +1968,406 @@ function loadSamples(){
   const er=new Set(resPosts.map(p=>p.id));sr.filter(p=>!er.has(p.id)).forEach(p=>resPosts.push(p));
   resPosts.sort((a,b)=>new Date(b.date)-new Date(a.date));saveRes();
 }
+
+/* ══════════════════════════════════════
+   실시간 금융 뉴스 티커
+   - Claude AI로 뉴스 생성 (매일 자동 갱신)
+   - localStorage 캐시 (당일 재방문 시 재사용)
+══════════════════════════════════════ */
+
+const FALLBACK_NEWS = [
+  '코스피·코스닥·파생상품시장, 6월 3일 전면 휴장',
+  '코스피, AI 관련주 주도로 최고치 랠리 연장',
+  '5월 코스피 8,500p 육박…사상 최고치 마감',
+  '삼성전자·SK하이닉스 쏠림에 시총 첫 7,000조 돌파',
+  '젠슨 황 방한 기대감에 엔비디아發 호재 지속 유입',
+  '한화오션, 하루 7% 급락…조정인가 매수 기회인가',
+  '두산에너빌리티, 10만원선 사수 공방 지속',
+  '국내 증시, 코스피-코스닥 차별화 장세 이어져',
+  '미 재무부, 이란 암호화폐 거래 플랫폼 제재 단행',
+  '영국 상원, 과도한 스테이블코인 규제 경쟁력 약화 우려',
+  '비트코인, 스트래티지 의존도 과다 우려에 이틀 연속 하락',
+  '5월 무역수지 269억달러…사상 최대 흑자 기록',
+];
+
+// 한국시간 오전 8시 기준으로 뉴스 슬롯 계산
+// 예) 오전 7:59 → 어제 슬롯 / 오전 8:00 이후 → 오늘 슬롯
+function getNewsSlotKey() {
+  const now = new Date();
+  // 한국 시간 = UTC+9
+  const kstOffset = 9 * 60; // 분
+  const utcMin = now.getTime() / 1000 / 60; // UTC 분
+  const kstMin = utcMin + kstOffset;
+
+  const kstDate = new Date((kstMin - 8 * 60) * 60 * 1000); // 08:00 기준 shift
+  const y = kstDate.getUTCFullYear();
+  const m = String(kstDate.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(kstDate.getUTCDate()).padStart(2, '0');
+  return `fb_news_${y}-${m}-${d}`;
+}
+
+// 다음 갱신 시각(한국시간 오전 8시)까지 남은 ms 계산
+function getMsUntilNext8AM() {
+  const now = new Date();
+  const kstNow = new Date(now.getTime() + 9 * 60 * 60 * 1000); // KST
+
+  // 다음 오전 8시 (KST)
+  const next8 = new Date(kstNow);
+  next8.setUTCHours(8 - 9, 0, 0, 0); // KST 08:00 = UTC -01:00 → 전날 23:00 UTC
+  // 더 간단하게: KST 기준으로 오늘 8시를 구하고 이미 지났으면 내일 8시
+  const kstMidnight = new Date(kstNow);
+  kstMidnight.setUTCHours(0, 0, 0, 0);
+  const kst8AM = new Date(kstMidnight.getTime() + 8 * 60 * 60 * 1000); // KST 오전 8시 (UTC)
+  const kst8AM_utc = new Date(kst8AM.getTime() - 9 * 60 * 60 * 1000); // → UTC 전날 23:00
+
+  // 현재 KST가 8시 이전이면 → 오늘 KST 8시, 이후면 → 내일 KST 8시
+  const kstHour = kstNow.getUTCHours();
+  const kstMin  = kstNow.getUTCMinutes();
+  let targetUTC;
+  if (kstHour < 8) {
+    // 오늘 KST 08:00 = UTC 23:00 전날
+    targetUTC = kst8AM_utc;
+  } else {
+    // 내일 KST 08:00
+    targetUTC = new Date(kst8AM_utc.getTime() + 24 * 60 * 60 * 1000);
+  }
+
+  return targetUTC - now;
+}
+
+async function fetchFinanceNews() {
+  const CACHE_KEY = getNewsSlotKey();
+
+  // 캐시 있으면 바로 사용
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const migrated = parsed.map(item =>
+          typeof item === 'string'
+            ? { title: item, url: `https://search.naver.com/search.naver?where=news&query=${encodeURIComponent(item)}&sort=1` }
+            : item
+        );
+        renderTicker(migrated);
+        return;
+      }
+    } catch(e) {}
+  }
+
+  renderTicker([{title:'🔄 오늘의 금융 뉴스 불러오는 중...', url:null}], false);
+
+  try {
+    const newsItems = await generateNewsWithClaude();
+    saveAndRender(newsItems, CACHE_KEY);
+  } catch(err) {
+    console.warn('뉴스 로딩 실패, fallback:', err);
+    // FALLBACK: NEWS_POOL 첫 12개 사용
+    const fallbackItems = NEWS_POOL.slice(0, 12);
+    renderTicker(fallbackItems);
+  }
+}
+
+/* ── 날짜 시드 기반 뉴스 선택 (API 불필요) ── */
+function generateNewsWithClaude() {
+  // 날짜를 시드로 사용해 매일 다른 12개 뉴스 선택
+  const slot = getNewsSlotKey(); // 'fb_news_YYYY-MM-DD'
+  const seed = slot.split('-').reduce((a, b) => a + parseInt(b.replace('fb_news_','') || b || 0), 0);
+
+  function seededShuffle(arr, seed) {
+    const a = [...arr];
+    let s = seed;
+    for (let i = a.length - 1; i > 0; i--) {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      const j = Math.abs(s) % (i + 1);
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const shuffled = seededShuffle(NEWS_POOL, seed);
+  // NEWS_POOL 각 항목이 이미 {title, url} 형태 → 그대로 반환
+  return Promise.resolve(shuffled.slice(0, 12));
+}
+
+/* ── 뉴스 풀 (매일 다른 조합, 실제 회사명, 정확한 네이버 뉴스 링크) ── */
+function makeNaverUrl(q) {
+  return 'https://search.naver.com/search.naver?where=news&query=' + encodeURIComponent(q) + '&sm=tab_opt&sort=1';
+}
+
+const NEWS_POOL = [
+  // 증시
+  { title: '코스피, 외국인 2조 순매수에 8,500선 돌파 시도', url: makeNaverUrl('코스피 외국인 순매수') },
+  { title: '코스닥 1,200선 안착…AI 반도체 테마 강세 지속', url: makeNaverUrl('코스닥 AI 반도체 1200') },
+  { title: '코스피·코스닥 차별화 심화…대형주만 사상 최고', url: makeNaverUrl('코스피 코스닥 차별화') },
+  // 삼성전자
+  { title: '삼성전자, 2분기 영업이익 10조 돌파 전망', url: makeNaverUrl('삼성전자 2분기 영업이익') },
+  { title: '삼성전자, HBM3E 엔비디아 공급 재개 확정', url: makeNaverUrl('삼성전자 HBM 엔비디아') },
+  { title: '삼성전자 파운드리, TSMC 추격 위해 2nm 수율 개선', url: makeNaverUrl('삼성전자 파운드리 2nm') },
+  // SK하이닉스
+  { title: 'SK하이닉스, HBM4 양산 본격화…엔비디아 독점 공급', url: makeNaverUrl('SK하이닉스 HBM4 양산') },
+  { title: 'SK하이닉스 1분기 영업이익 7조…역대 최대', url: makeNaverUrl('SK하이닉스 영업이익') },
+  // 엔비디아 / 반도체
+  { title: '엔비디아 젠슨 황 방한…삼성·SK하이닉스와 회동', url: makeNaverUrl('엔비디아 젠슨황 방한 삼성 SK') },
+  { title: 'TSMC 1분기 순익 40% 급증…AI 수요 폭발', url: makeNaverUrl('TSMC 실적 AI 수요') },
+  { title: '국내 반도체 장비주, TSMC 수혜에 일제 급등', url: makeNaverUrl('반도체 장비주 TSMC') },
+  // 현대차 / 기아
+  { title: '현대차, 미국 조지아 전기차 공장 풀가동 돌입', url: makeNaverUrl('현대차 조지아 전기차 공장') },
+  { title: '기아, 1분기 영업이익 2.2조…사상 최대 경신', url: makeNaverUrl('기아 영업이익 최대') },
+  { title: '현대차그룹, 트럼프 관세 유예 연장 협상 마무리', url: makeNaverUrl('현대차 트럼프 관세') },
+  // 금리 / 한국은행
+  { title: '한국은행, 기준금리 2.75% 동결…하반기 인하 시사', url: makeNaverUrl('한국은행 기준금리') },
+  { title: '미 연준 6월 FOMC 금리 동결…연내 2회 인하 전망', url: makeNaverUrl('연준 FOMC 금리 인하') },
+  { title: '원/달러 환율 1,380원대 진입…6개월 만에 최저', url: makeNaverUrl('원달러 환율') },
+  { title: '국고채 10년물 금리 3.2%대 하락…채권 강세', url: makeNaverUrl('국고채 금리') },
+  // 금융지주
+  { title: 'KB금융, 1분기 순이익 1.6조…자사주 소각 결정', url: makeNaverUrl('KB금융 순이익 자사주') },
+  { title: '신한금융, 동남아 은행 인수로 글로벌 확장 가속', url: makeNaverUrl('신한금융 해외 인수') },
+  { title: '하나금융, 하나증권 IB 부문 분사 추진 발표', url: makeNaverUrl('하나금융 하나증권 IB') },
+  { title: '카카오뱅크, 중소기업 대출 출시…은행권 긴장', url: makeNaverUrl('카카오뱅크 기업대출') },
+  // IPO / 공모주
+  { title: '케이뱅크, 코스피 상장예비심사 통과…IPO 재추진', url: makeNaverUrl('케이뱅크 IPO 상장') },
+  { title: '컬리, 하반기 코스피 상장 재도전…밸류 2조 목표', url: makeNaverUrl('컬리 IPO 상장') },
+  { title: '두산로보틱스, 수요예측 흥행…공모가 상단 확정', url: makeNaverUrl('두산로보틱스 공모주') },
+  // M&A / 사모펀드
+  { title: 'MBK파트너스, 고려아연 공개매수 2차전 돌입', url: makeNaverUrl('MBK파트너스 고려아연') },
+  { title: '카카오, SM엔터테인먼트 지분 블록딜 매각 완료', url: makeNaverUrl('카카오 SM엔터 매각') },
+  { title: 'KKR, 국내 물류 리츠 5,000억 규모 인수 추진', url: makeNaverUrl('KKR 국내 리츠 인수') },
+  // 부동산 PF
+  { title: '태영건설 워크아웃 종결…부동산 PF 정상화 마무리', url: makeNaverUrl('태영건설 워크아웃 PF') },
+  { title: '금융당국, 부동산 PF 정상화 펀드 3조 추가 조성', url: makeNaverUrl('부동산 PF 정상화 펀드') },
+  { title: '서울 강남 아파트 거래량, 6개월 만에 반등 전환', url: makeNaverUrl('서울 아파트 거래량') },
+  // 조선 / 방산
+  { title: '한화오션, 미 해군 함정 MRO 계약 4.2조 수주', url: makeNaverUrl('한화오션 미해군 수주') },
+  { title: 'HD현대중공업, LNG선 10척 수주…연간 목표 초과', url: makeNaverUrl('HD현대중공업 LNG 수주') },
+  { title: '한국항공우주산업, 폴란드 FA-50 추가 수출 협상', url: makeNaverUrl('한국항공우주 FA-50') },
+  // 이차전지 / 에너지
+  { title: 'LG에너지솔루션, 미시간 배터리 공장 2단계 증설', url: makeNaverUrl('LG에너지솔루션 미국 공장') },
+  { title: '포스코퓨처엠, 양극재 캐파 30만톤 확대 발표', url: makeNaverUrl('포스코퓨처엠 양극재') },
+  { title: '두산에너빌리티, 체코 원전 수주 최종 계약 체결', url: makeNaverUrl('두산에너빌리티 체코 원전') },
+  // 가상자산
+  { title: '비트코인 11만 달러 돌파…업비트 거래량 5조 육박', url: makeNaverUrl('비트코인 11만달러 업비트') },
+  { title: '금융위원회, 가상자산 이용자 보호법 2단계 시행', url: makeNaverUrl('금융위 가상자산 이용자보호') },
+  { title: '코인베이스, 한국 법인 설립…업비트·빗썸과 정면승부', url: makeNaverUrl('코인베이스 한국') },
+  // 무역 / 거시경제
+  { title: '5월 수출 600억 달러 돌파…반도체 수출 역대 최대', url: makeNaverUrl('5월 수출 반도체') },
+  { title: '트럼프 관세 90일 유예 만료…한미 협상 분수령', url: makeNaverUrl('트럼프 관세 한미 협상') },
+  { title: '미국 5월 CPI 2.3%…연준 조기 금리 인하 기대 재점화', url: makeNaverUrl('미국 CPI 물가') },
+  // 게임 / 엔터
+  { title: '크래프톤, 인조이 글로벌 출시 첫 달 매출 1,000억', url: makeNaverUrl('크래프톤 인조이') },
+  { title: 'HYBE, 위버스 북미 유료 구독자 500만 돌파', url: makeNaverUrl('HYBE 위버스 북미') },
+];
+
+/* ── 캐시 저장 + 렌더링 ── */
+function saveAndRender(newsItems, cacheKey) {
+  if (!newsItems || newsItems.length === 0) throw new Error('empty');
+  localStorage.setItem(cacheKey, JSON.stringify(newsItems));
+  // 이전 슬롯 캐시 정리
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('fb_news_') && k !== cacheKey)
+    .forEach(k => localStorage.removeItem(k));
+  renderTicker(newsItems);
+}
+
+function renderTicker(items, animate = true) {
+  const inner = document.getElementById('tickerInner');
+  if (!inner) return;
+
+  // 무한 루프를 위해 2배로 복제
+  const all = [...items, ...items];
+  inner.innerHTML = all.map(item => {
+    const title = typeof item === 'string' ? item : item.title;
+    const url   = typeof item === 'string' ? null  : item.url;
+    if (url) {
+      return `<a class="ticker-item ticker-link" href="${url}" target="_blank" rel="noopener noreferrer">${escTicker(title)}</a>`;
+    }
+    return `<span class="ticker-item">${escTicker(title)}</span>`;
+  }).join('');
+
+  // 뉴스 개수에 따라 스크롤 속도 조절 (많을수록 느리게)
+  const speed = Math.max(20, items.length * 3.5);
+  inner.style.animationDuration = speed + 's';
+
+  if (!animate) {
+    inner.style.animationPlayState = 'paused';
+  } else {
+    inner.style.animationPlayState = 'running';
+  }
+}
+
+function escTicker(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// 한국시간 매일 오전 8시에 자동 갱신
+function scheduleNewsRefresh() {
+  const ms = getMsUntilNext8AM();
+
+  const hh = Math.floor(ms / 1000 / 60 / 60);
+  const mm = Math.floor((ms / 1000 / 60) % 60);
+  console.log(`📰 뉴스 다음 갱신: ${hh}시간 ${mm}분 후 (한국시간 오전 8시)`);
+
+  setTimeout(() => {
+    // 현재 슬롯 캐시 삭제 후 새로 로딩
+    const curKey = getNewsSlotKey();
+    localStorage.removeItem(curKey);
+    fetchFinanceNews();
+    scheduleNewsRefresh(); // 다음날 오전 8시도 예약
+  }, ms + 5000); // 5초 여유
+}
+
+
+/* ══════════════════════════════════════
+   HOME HERO EFFECTS
+══════════════════════════════════════ */
+
+/* ── 파티클 캔버스 ── */
+function initHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = {x: -999, y: -999};
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x  = Math.random() * W;
+      this.y  = init ? Math.random() * H : H + 10;
+      this.vx = (Math.random() - .5) * .4;
+      this.vy = -(Math.random() * .6 + .2);
+      this.r  = Math.random() * 1.5 + .5;
+      this.alpha = Math.random() * .5 + .2;
+      this.life  = 0;
+      this.maxLife = Math.random() * 300 + 200;
+    }
+    update() {
+      // 마우스 반발
+      const dx = this.x - mouse.x, dy = this.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        this.vx += dx / dist * .3;
+        this.vy += dy / dist * .3;
+      }
+      this.vx *= .99;
+      this.vy *= .99;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.life++;
+      if (this.life > this.maxLife || this.y < -10) this.reset(false);
+    }
+    draw() {
+      const progress = this.life / this.maxLife;
+      const a = this.alpha * (progress < .2 ? progress/.2 : progress > .8 ? (1-progress)/.2 : 1);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(232,168,0,${a})`;
+      ctx.fill();
+    }
+  }
+
+  // 라인 연결
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(232,168,0,${(.15 * (1 - d/120)).toFixed(3)})`;
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  let animId;
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawLines();
+    particles.forEach(p => { p.update(); p.draw(); });
+    animId = requestAnimationFrame(animate);
+  }
+
+  function start() {
+    resize();
+    particles = Array.from({length: 80}, () => new Particle());
+    animate();
+  }
+
+  // 페이지 전환 시 정지/재시작
+  window.stopHeroCanvas  = () => { cancelAnimationFrame(animId); };
+  window.startHeroCanvas = () => { resize(); animate(); };
+
+  window.addEventListener('resize', () => { resize(); });
+  canvas.closest('section')?.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  canvas.closest('section')?.addEventListener('mouseleave', () => {
+    mouse.x = -999; mouse.y = -999;
+  });
+
+  start();
+}
+
+/* ── 숫자 카운트업 ── */
+function animateCountUp() {
+  const targets = [
+    {el: null, selector: '.hs-item:nth-child(1) .hs-num', target: 50, suffix: '+'},
+    {el: null, selector: '.hs-item:nth-child(2) .hs-num', target: 5,  suffix: ''},
+    {el: null, selector: '.hs-item:nth-child(3) .hs-num', target: 20, suffix: '+'},
+    {el: null, selector: '.hs-item:nth-child(4) .hs-num', target: 3,  suffix: ''},
+  ];
+
+  targets.forEach(t => {
+    t.el = document.querySelector(t.selector);
+    if (!t.el) return;
+    const sup = t.el.querySelector('sup');
+    const supHTML = sup ? sup.outerHTML : (t.suffix ? `<sup style="font-size:1.2rem">${t.suffix}</sup>` : '');
+    let current = 0;
+    const duration = 1800;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      current = Math.round(eased * t.target);
+      t.el.innerHTML = current + supHTML;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── 히어로 초기화 ── */
+function initHeroEffects() {
+  initHeroCanvas();
+  // 통계 숫자 카운트업 (1초 딜레이)
+  setTimeout(animateCountUp, 1000);
+}
+
 loadSamples();
 setLang(currentLang);
+// Hero 이펙트 초기화
+setTimeout(initHeroEffects, 300);
+
+// 실시간 뉴스 티커 초기화
+fetchFinanceNews();
+scheduleNewsRefresh();
 </script>
 </body>
 </html>
