@@ -37,8 +37,8 @@ header.scrolled{background:rgba(6,14,26,.97);backdrop-filter:blur(20px);border-b
 nav{display:flex;align-items:center;gap:2px;flex:1}
 .nav-btn{padding:8px 16px;font-size:.82rem;font-weight:600;color:var(--grey);background:none;border:none;cursor:pointer;border-radius:6px;transition:color .2s,background .2s;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;font-family:'Syne',sans-serif}
 .nav-btn:hover,.nav-btn.active{color:var(--gold);background:var(--gold-dim)}
-.header-cta{margin-left:auto;display:flex;align-items:center;gap:16px}
-.btn-apply-header{background:var(--gold);color:var(--navy);padding:9px 22px;border-radius:6px;font-size:.8rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.header-cta{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-apply-header{background:var(--gold);color:var(--navy);padding:9px 22px;border-radius:6px;font-size:.8rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .btn-apply-header:hover{background:var(--gold-2);transform:translateY(-1px)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:auto}
 .hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s}
@@ -357,21 +357,21 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
    PAGE 7: APPLY
 ───────────────────────────────────── */
 #page-apply{padding:0}
-.apply-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 32px;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(232,168,0,.06),transparent 65%),var(--navy);position:relative;overflow:hidden;text-align:center}
+.apply-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 20px 60px;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(232,168,0,.06),transparent 65%),var(--navy);position:relative;overflow:hidden;text-align:center}
 .apply-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,0,.025) 1px,transparent 1px);background-size:56px 56px}
-.apply-inner{max-width:680px;position:relative;z-index:1}
-.apply-badge{display:inline-block;border:1px solid var(--red);border-radius:4px;padding:6px 18px;font-size:.7rem;font-weight:700;color:var(--red);letter-spacing:.18em;text-transform:uppercase;margin-bottom:32px}
-.apply-h{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,5vw,4rem);line-height:1.1;margin-bottom:24px}
+.apply-inner{max-width:620px;width:100%;position:relative;z-index:1;box-sizing:border-box}
+.apply-badge{display:inline-block;border:1px solid var(--red);border-radius:4px;padding:5px 14px;font-size:.68rem;font-weight:700;color:var(--red);letter-spacing:.14em;text-transform:uppercase;margin-bottom:24px}
+.apply-h{font-family:'DM Serif Display',serif;font-size:clamp(1.6rem,5vw,3.2rem);line-height:1.2;margin-bottom:20px}
 .apply-h .g{color:var(--gold)}
-.apply-desc{font-size:.95rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.9;margin-bottom:40px;word-break:keep-all}
-.apply-closed-box{background:var(--navy-card);border:1px solid rgba(214,52,71,.3);border-radius:16px;padding:40px;margin-bottom:40px}
-.apply-closed-icon{font-size:2.4rem;margin-bottom:16px}
-.apply-closed-title{font-size:1.2rem;font-weight:800;margin-bottom:8px}
-.apply-closed-desc{font-size:.88rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all}
-.apply-next-box{background:var(--navy-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;align-items:center;gap:20px;text-align:left}
-.anb-icon{width:52px;height:52px;background:var(--gold-dim);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
-.anb-text h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
-.anb-text p{font-size:.82rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.7;word-break:keep-all}
+.apply-desc{font-size:.9rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.85;margin-bottom:32px;word-break:keep-all}
+.apply-closed-box{background:var(--navy-card);border:1px solid rgba(214,52,71,.3);border-radius:14px;padding:clamp(20px,5vw,36px);margin-bottom:24px;width:100%;box-sizing:border-box}
+.apply-closed-icon{font-size:2rem;margin-bottom:12px}
+.apply-closed-title{font-size:1.05rem;font-weight:800;margin-bottom:8px}
+.apply-closed-desc{font-size:.85rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.8;word-break:keep-all}
+.apply-next-box{background:var(--navy-card);border:1px solid var(--border);border-radius:14px;padding:clamp(16px,4vw,28px);display:flex;align-items:flex-start;gap:16px;text-align:left;width:100%;box-sizing:border-box}
+.anb-icon{width:44px;height:44px;min-width:44px;background:var(--gold-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.anb-text h4{font-size:.86rem;font-weight:700;margin-bottom:6px}
+.anb-text p{font-size:.8rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif;line-height:1.7;word-break:keep-all}
 /* ─────────────────────────────────────
    MODALS
 ───────────────────────────────────── */
@@ -776,7 +776,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 <div class="apply-wrap">
   <div class="apply-inner">
     <div class="apply-badge">2026 Spring — Closed</div>
-    <h1 class="apply-h" id="apply-h1-el">FINBASE에<br><span class="g">지원하기</span></h1>
+    <h1 class="apply-h" id="apply-h1-el">FINBASE <span class="g">지원하기</span></h1>
     <p class="apply-desc" id="apply-desc-el">FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.</p>
     <div class="apply-closed-box">
       <div class="apply-closed-icon">🔒</div>
@@ -790,7 +790,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
         <p id="apply-next-p-el">2026년 가을학기 모집이 예정되어 있습니다. Instagram <strong>@finbase_</strong> 을 팔로우하면 모집 공고를 가장 빠르게 받아볼 수 있습니다.</p>
       </div>
     </div>
-    <button class="btn-ghost" id="apply-contact-btn-el" style="margin-top:28px" onclick="goto('contact')">문의하기 →</button>
+    <button class="btn-ghost" id="apply-contact-btn-el" style="margin-top:24px;width:100%;max-width:300px" onclick="goto('contact')">문의하기 →</button>
   </div>
 </div>
 </div>
@@ -812,7 +812,7 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 </footer>
 
 <!-- ADMIN FAB -->
-<button class="admin-fab" id="adminFab" onclick="openPw()" title="관리자 글쓰기">✏</button>
+<button class="admin-fab" id="adminFab" onclick="isAdmin?openWriteModal():openPw()" title="관리자 패널">✏</button>
 
 <!-- LIGHTBOX -->
 <div class="lb" id="lb" onclick="if(event.target===this)closeLb()">
@@ -844,32 +844,64 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 
 <!-- ══ WRITE CHOICE MODAL ══ -->
 <div class="modal-ov" id="writeChoiceModal">
-<div class="modal pw-gate" style="max-width:440px">
+<div class="modal pw-gate" style="max-width:460px">
   <button class="modal-x" onclick="closeM('writeChoiceModal')">✕</button>
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-    <div style="width:36px;height:36px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">✏</div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+    <div style="width:36px;height:36px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">🔐</div>
     <div>
-      <h2 style="margin-bottom:2px;font-size:1.25rem">무엇을 <span class="g">작성</span>할까요?</h2>
-      <p style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">관리자 모드 · 콘텐츠를 등록하세요</p>
+      <h2 style="margin-bottom:2px;font-size:1.25rem">관리자 <span class="g">패널</span></h2>
+      <p style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">콘텐츠 등록 · 수정 · 삭제</p>
     </div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+
+  <!-- 새 콘텐츠 등록 -->
+  <div style="font-size:.68rem;font-weight:800;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">새 콘텐츠 등록</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
     <button onclick="openWrite('research')" class="write-choice-btn">
-      <span style="font-size:1.3rem">📄</span>
-      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">리서치 업로드</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">리서치 레포트 · 팀별 분류 · PDF 링크 첨부</div></div>
-      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+      <span style="font-size:1.2rem">📄</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">리서치 업로드</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">레포트 · 팀별 분류 · PDF 링크</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.85rem">→</span>
     </button>
     <button onclick="openWrite('weekly')" class="write-choice-btn">
-      <span style="font-size:1.3rem">📚</span>
-      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">주차별 활동 등록</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">세션 아카이빙 · 사진 최대 10장 · 자료 링크</div></div>
-      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+      <span style="font-size:1.2rem">📚</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">주차별 활동 등록</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">세션 아카이빙 · 사진 · 자료 링크</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.85rem">→</span>
     </button>
     <button onclick="openWrite('event')" class="write-choice-btn">
-      <span style="font-size:1.3rem">🎉</span>
-      <div><div style="font-size:.9rem;font-weight:700;margin-bottom:3px">이벤트 & 블로그 포스팅</div><div style="font-size:.77rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">이벤트 후기 · 세미나 리뷰 · 사진 첨부</div></div>
-      <span style="margin-left:auto;color:var(--gold);font-size:.9rem">→</span>
+      <span style="font-size:1.2rem">🎉</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">이벤트 & 블로그 포스팅</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">이벤트 후기 · 세미나 리뷰 · 사진</div></div>
+      <span style="margin-left:auto;color:var(--gold);font-size:.85rem">→</span>
     </button>
   </div>
+
+  <!-- 게시물 관리 -->
+  <div style="font-size:.68rem;font-weight:800;letter-spacing:.14em;color:var(--grey);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">게시물 관리 (수정 · 삭제)</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <button onclick="openManage('research')" class="write-choice-btn">
+      <span style="font-size:1.2rem">📄</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">리서치 관리</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif" id="manage-res-count">등록된 리서치 목록에서 수정·삭제</div></div>
+      <span style="margin-left:auto;color:var(--grey);font-size:.85rem">→</span>
+    </button>
+    <button onclick="openManage('weekly')" class="write-choice-btn">
+      <span style="font-size:1.2rem">📚</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">주차별 활동 관리</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif" id="manage-wk-count">등록된 활동 목록에서 수정·삭제</div></div>
+      <span style="margin-left:auto;color:var(--grey);font-size:.85rem">→</span>
+    </button>
+    <button onclick="openManage('event')" class="write-choice-btn">
+      <span style="font-size:1.2rem">🎉</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:2px">이벤트 관리</div><div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif" id="manage-ev-count">등록된 이벤트 목록에서 수정·삭제</div></div>
+      <span style="margin-left:auto;color:var(--grey);font-size:.85rem">→</span>
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- ══ 게시물 관리 모달 ══ -->
+<div class="modal-ov" id="manageModal">
+<div class="modal" style="max-width:600px">
+  <button class="modal-x" onclick="closeM('manageModal')">✕</button>
+  <h2 id="manageTitle">📋 게시물 <span class="g">관리</span></h2>
+  <div id="manageList" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;max-height:60vh;overflow-y:auto"></div>
 </div>
 </div>
 
@@ -1047,7 +1079,7 @@ const LANG = {
   'form-msg-ph':    {ko:'문의 내용을 입력해주세요...', en:'What\'s on your mind?'},
   'contact-btn':    {ko:'메시지 보내기', en:'Send Message'},
   // APPLY
-  'apply-h1':       {ko:'FINBASE에<br><span class="g">지원하기</span>', en:'Ready to Join<br><span class="g">FINBASE?</span>'},
+  'apply-h1':       {ko:'FINBASE <span class="g">지원하기</span>', en:'Join <span class="g">FINBASE</span>'},
   'apply-desc':     {ko:'FINBASE는 금융에 진지하게 관심 있는 학생이라면<br>누구나 지원할 수 있습니다. 매 학기 공개 모집합니다.', en:'If you\'re serious about finance, FINBASE is for you.<br>We recruit new members every semester — no prior experience required.'},
   'apply-closed-t': {ko:'2026년 봄학기 모집 마감', en:'Spring 2026 Recruitment — Closed'},
   'apply-closed-d': {ko:'현재 2026년 봄학기 지원이 마감되었습니다.<br>다음 모집은 2026년 가을학기에 진행될 예정입니다.<br>인스타그램 팔로우를 통해 모집 공고를 받아보세요.', en:'We\'ve wrapped up recruitment for Spring 2026.<br>Our next round opens for Fall 2026 — stay tuned.<br>Follow us on Instagram so you don\'t miss the announcement.'},
@@ -1439,7 +1471,7 @@ function checkPw(){
   if(document.getElementById('pwIn').value===ADMIN_PW){
     closeM('pwModal');
     setAdminMode(true);
-    openM('writeChoiceModal');
+    openWriteModal();
   } else {
     document.getElementById('pwErr').textContent='❌ 비밀번호가 틀렸습니다.';
     document.getElementById('pwIn').value='';
@@ -1457,6 +1489,81 @@ function openWrite(type){
   if(type==='research'){ resetResForm(); openM('resModal'); }
   else if(type==='weekly'){ resetWkForm(); openM('wkModal'); }
   else { resetEvForm(); openM('evModal'); }
+}
+
+/* ── 게시물 관리 (수정·삭제 목록) ── */
+function openWriteModal() {
+  // 카운트 업데이트
+  const rc = document.getElementById('manage-res-count');
+  const wc = document.getElementById('manage-wk-count');
+  const ec = document.getElementById('manage-ev-count');
+  if(rc) rc.textContent = resPosts.length ? `${resPosts.length}개 등록됨 · 클릭해서 관리` : '등록된 리서치 없음';
+  if(wc) wc.textContent = wkPosts.length  ? `${wkPosts.length}개 등록됨 · 클릭해서 관리`  : '등록된 활동 없음';
+  if(ec) ec.textContent = evPosts.length  ? `${evPosts.length}개 등록됨 · 클릭해서 관리`  : '등록된 이벤트 없음';
+  openM('writeChoiceModal');
+}
+
+function openManage(type) {
+  closeM('writeChoiceModal');
+  const list = document.getElementById('manageList');
+  const title = document.getElementById('manageTitle');
+
+  let posts, label;
+  if(type==='research'){ posts=resPosts; label='리서치'; }
+  else if(type==='weekly'){ posts=wkPosts; label='주차별 활동'; }
+  else { posts=evPosts; label='이벤트'; }
+
+  title.innerHTML = `📋 ${label} <span class="g">관리</span>`;
+
+  if(!posts.length){
+    list.innerHTML = `<div class="empty-box" style="padding:40px 0"><div class="empty-icon">📭</div><h3>등록된 ${label}가 없습니다</h3></div>`;
+    openM('manageModal'); return;
+  }
+
+  list.innerHTML = posts.map(p => {
+    const titleText = p.title || p.num || '제목 없음';
+    const dateText  = p.date ? fmtDate(p.date) : '';
+    const teamText  = p.team || p.cat || p.category || '';
+    return `
+    <div style="background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--gold-border)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.88rem;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(titleText)}</div>
+        <div style="font-size:.75rem;color:var(--grey);font-family:'Noto Sans KR',sans-serif">${dateText}${teamText ? ' · '+esc(teamText) : ''}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn-edit" style="padding:7px 14px;font-size:.78rem" onclick="closeM('manageModal');${type==='research'?`editRes('${p.id}')`:(type==='weekly'?`editWk('${p.id}')`:`editEv('${p.id}')`)}">✏ 수정</button>
+        <button class="btn-del" style="padding:7px 14px;font-size:.78rem" onclick="${type==='research'?`delResFromManage('${p.id}')`:(type==='weekly'?`delWkFromManage('${p.id}')`:`delEvFromManage('${p.id}')`)}">🗑 삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  openM('manageModal');
+}
+
+// 관리 모달에서 삭제 후 목록 갱신
+function delResFromManage(id){
+  confirmDel('리서치를 삭제할까요?','삭제된 리서치는 복구할 수 없습니다.',()=>{
+    resPosts=resPosts.filter(p=>p.id!==id);
+    saveRes();renderRes();
+    showToast('리서치가 삭제되었습니다.');
+    openManage('research'); // 목록 갱신
+  });
+}
+function delWkFromManage(id){
+  confirmDel('활동을 삭제할까요?','삭제된 활동은 복구할 수 없습니다.',()=>{
+    wkPosts=wkPosts.filter(p=>p.id!==id);
+    saveWk();renderWk();
+    showToast('활동이 삭제되었습니다.');
+    openManage('weekly');
+  });
+}
+function delEvFromManage(id){
+  confirmDel('포스팅을 삭제할까요?','삭제된 포스팅은 복구할 수 없습니다.',()=>{
+    evPosts=evPosts.filter(p=>p.id!==id);
+    saveEv();renderEv();
+    showToast('포스팅이 삭제되었습니다.');
+    openManage('event');
+  });
 }
 
 /* ══════════ CONFIRM DIALOG ══════════ */
