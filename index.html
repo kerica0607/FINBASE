@@ -191,7 +191,7 @@ nav{display:flex;align-items:center;gap:2px;flex:1}
 .org-card-name{font-size:1rem;font-weight:800;color:var(--white)}
 .org-card-sub{font-size:.72rem;color:var(--grey);margin-top:4px;font-family:'Noto Sans KR',sans-serif}
 /* 팀 카드 (하단 열) */
-.org-card.team{min-width:148px;border-style:dashed}
+.org-card.team{min-width:148px;border-style:dashed;padding-bottom:14px}
 .org-card.team .org-card-role{color:var(--grey)}
 .org-card.team:hover{border-color:var(--gold);border-style:solid}
 .members-section{padding:80px 32px;background:var(--navy-2)}
@@ -660,8 +660,8 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
     <!-- 기수 탭 -->
     <div class="cohort-tabs fu fd2">
       <button class="cohort-tab on" onclick="switchCohort(1, this)">1기</button>
-      <button class="cohort-tab" onclick="switchCohort(2, this)">2기</button>
-      <button class="cohort-tab" onclick="switchCohort(3, this)">3기</button>
+      <button class="cohort-tab" onclick="switchCohort(2, this)">2기 <span style="font-size:.65rem;opacity:.6;font-weight:400">(미정)</span></button>
+      <button class="cohort-tab" onclick="switchCohort(3, this)">3기 <span style="font-size:.65rem;opacity:.6;font-weight:400">(미정)</span></button>
     </div>
     <div id="membersList"></div>
   </div>
@@ -993,6 +993,39 @@ footer{background:var(--navy-2);border-top:1px solid var(--border);padding:40px 
 </div>
 
 <script>
+/* ══════════ 이름 / 직책 번역 (전역) ══════════ */
+const NAME_KO_EN = {
+  '정래현': 'Raehyun Jeong',   '박현민': 'Hyunmin Park',
+  '이다현': 'Dahyun Lee',      '김민준': 'Minjun Kim',
+  '김종우': 'Jongwoo Kim',     '조민서': 'Minseo Jo',
+  '전도현': 'Dohyeon Jeon',    '전아원': 'Awon Jeon',
+  '이승규': 'Seunggyu Lee',    '이세윤': 'Seyun Lee',
+  '이슬아': 'Seula Lee',       '김예은': 'Yeeun Kim',
+  '조원익': 'Wonik Jo',        '강신혁': 'Shinhyuk Kang',
+  '박승구': 'Seunggu Park',    '박찬영': 'Chanyoung Park',
+  '엄정빈': 'Jeongbin Eom',    '이승주': 'Seungju Lee',
+  '최성은': 'Sungeun Choi',    '한서연': 'Seoyeon Han',
+  '이승연': 'Seungyeon Lee',   '이지원': 'Jiwon Lee',
+  '이정우': 'Jeongwoo Lee',    '한선규': 'Seonkyu Han',
+  '이유나': 'Yuna Lee',        '최윤수': 'Yunsoo Choi',
+  '최동훈': 'Donghun Choi',    '김서원': 'Seowon Kim',
+  '이효원': 'Hyowon Lee',      '유영선': 'Youngsun Yu',
+};
+const ROLE_KO_EN = {
+  '회장':'President', '부회장':'Vice President',
+  '총무':'Treasurer', '서기':'Secretary',
+  '부장':'Director',  '팀장':'Team Lead',
+  '매니저':'Manager', '팀원':'Member',
+};
+function transName(name) {
+  return (typeof currentLang !== 'undefined' && currentLang === 'en')
+    ? (NAME_KO_EN[name] || name) : name;
+}
+function transRole(role) {
+  return (typeof currentLang !== 'undefined' && currentLang === 'en')
+    ? (ROLE_KO_EN[role] || role) : role;
+}
+
 /* ══════════ CONSTANTS ══════════ */
 const ADMIN_PW='finbase2026';
 const PAGES=['home','about','people','research','activity','contact','apply'];
@@ -1127,6 +1160,10 @@ function setLang(lang) {
 
   // 페이지 재렌더링 (현재 활성 페이지 기반)
   applyLangToPage();
+  // 동적 컴포넌트 재렌더링 (이름/직책 번역 반영)
+  if(document.getElementById('officersGrid')?.children.length) renderOfficers();
+  if(document.getElementById('orgChart')?.children.length) renderOrgChart();
+  renderMembers();
 }
 
 function T(key){ return LANG[key] ? LANG[key][currentLang] : ''; }
@@ -1312,94 +1349,26 @@ const cohortMembers = {
       {name:'김민준', role:'부장'},
       {name:'최윤수', role:'팀장'},
       {name:'최동훈', role:'매니저'},
-      {name:'서원',   role:'팀원'},
+      {name:'김서원', role:'팀원'},
       {name:'이효원', role:'팀원'},
       {name:'유영선', role:'팀원'},
     ],
   },
   2: {
     'Research — 기업산업분석팀': [],
-    'Research — IPO팀': [
-      {name:'정래현', role:'부장'},
-      {name:'박현민', role:'부장'},
-      {name:'이승규', role:'팀장'},
-      {name:'이세윤', role:'매니저'},
-      {name:'이슬아', role:'팀원'},
-      {name:'김예은', role:'팀원'},
-      {name:'조원익', role:'팀원'},
-      {name:'강신혁', role:'팀원'},
-      {name:'박승구', role:'팀원'},
-    ],
-    'Research — 교육팀': [
-      {name:'정래현', role:'부장'},
-      {name:'박현민', role:'부장'},
-      {name:'박찬영', role:'팀장'},
-      {name:'엄정빈', role:'매니저'},
-      {name:'이승주', role:'팀원'},
-      {name:'최성은', role:'팀원'},
-      {name:'한서연', role:'팀원'},
-      {name:'이승연', role:'팀원'},
-    ],
-    '콘텐츠팀': [
-      {name:'이다현', role:'부장'},
-      {name:'김민준', role:'부장'},
-      {name:'이지원', role:'팀장'},
-      {name:'이정우', role:'매니저'},
-      {name:'한선규', role:'팀원'},
-      {name:'이유나', role:'팀원'},
-    ],
-    '이벤트팀': [
-      {name:'이다현', role:'부장'},
-      {name:'김민준', role:'부장'},
-      {name:'최윤수', role:'팀장'},
-      {name:'최동훈', role:'매니저'},
-      {name:'서원',   role:'팀원'},
-      {name:'이효원', role:'팀원'},
-      {name:'유영선', role:'팀원'},
-    ],
+    'Research — IPO팀':          [],
+    'Research — 교육팀':         [],
+    '콘텐츠팀':                  [],
+    '이벤트팀':                  [],
   },
   3: {
     'Research — 기업산업분석팀': [],
-    'Research — IPO팀': [
-      {name:'정래현', role:'부장'},
-      {name:'박현민', role:'부장'},
-      {name:'이승규', role:'팀장'},
-      {name:'이세윤', role:'매니저'},
-      {name:'이슬아', role:'팀원'},
-      {name:'김예은', role:'팀원'},
-      {name:'조원익', role:'팀원'},
-      {name:'강신혁', role:'팀원'},
-      {name:'박승구', role:'팀원'},
-    ],
-    'Research — 교육팀': [
-      {name:'정래현', role:'부장'},
-      {name:'박현민', role:'부장'},
-      {name:'박찬영', role:'팀장'},
-      {name:'엄정빈', role:'매니저'},
-      {name:'이승주', role:'팀원'},
-      {name:'최성은', role:'팀원'},
-      {name:'한서연', role:'팀원'},
-      {name:'이승연', role:'팀원'},
-    ],
-    '콘텐츠팀': [
-      {name:'이다현', role:'부장'},
-      {name:'김민준', role:'부장'},
-      {name:'이지원', role:'팀장'},
-      {name:'이정우', role:'매니저'},
-      {name:'한선규', role:'팀원'},
-      {name:'이유나', role:'팀원'},
-    ],
-    '이벤트팀': [
-      {name:'이다현', role:'부장'},
-      {name:'김민준', role:'부장'},
-      {name:'최윤수', role:'팀장'},
-      {name:'최동훈', role:'매니저'},
-      {name:'서원',   role:'팀원'},
-      {name:'이효원', role:'팀원'},
-      {name:'유영선', role:'팀원'},
-    ],
+    'Research — IPO팀':          [],
+    'Research — 교육팀':         [],
+    '콘텐츠팀':                  [],
+    '이벤트팀':                  [],
   },
-};
+}
 let currentCohort = 1;
 
 /* ══════════ NAV ══════════ */
@@ -1621,13 +1590,10 @@ function renderOfficers(){
   document.getElementById('officersGrid').innerHTML=officers.map(o=>`
     <div class="officer-card fu">
       <div class="officer-avatar">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52%;height:52%;opacity:.85">
-          <circle cx="12" cy="8" r="4" fill="currentColor"/>
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52%;height:52%;opacity:.85"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/></svg>
       </div>
-      <div class="officer-name">${o.name}</div>
-      <div class="officer-role">${o.role}</div>
+      <div class="officer-name">${transName(o.name)}</div>
+      <div class="officer-role">${transRole(o.role)}</div>
       <div class="officer-dept">${o.dept}</div>
     </div>`).join('');
   document.querySelectorAll('#officersGrid .fu').forEach(el=>observer.observe(el));
@@ -1643,8 +1609,8 @@ function renderOrgChart(){
     <div class="org-row">
       <div class="org-node">
         <div class="org-card president">
-          <div class="org-card-role">회장</div>
-          <div class="org-card-name">정래현</div>
+          <div class="org-card-role">${transRole('회장')}</div>
+          <div class="org-card-name">${transName('정래현')}</div>
         </div>
       </div>
     </div>
@@ -1659,20 +1625,20 @@ function renderOrgChart(){
     <div class="org-row" style="gap:24px">
       <div class="org-node has-parent">
         <div class="org-card">
-          <div class="org-card-role">부회장</div>
-          <div class="org-card-name">박현민</div>
+          <div class="org-card-role">${transRole('부회장')}</div>
+          <div class="org-card-name">${transName('박현민')}</div>
         </div>
       </div>
       <div class="org-node has-parent">
         <div class="org-card">
-          <div class="org-card-role">총무</div>
-          <div class="org-card-name">이다현</div>
+          <div class="org-card-role">${transRole('총무')}</div>
+          <div class="org-card-name">${transName('이다현')}</div>
         </div>
       </div>
       <div class="org-node has-parent">
         <div class="org-card">
-          <div class="org-card-role">서기</div>
-          <div class="org-card-name">김민준</div>
+          <div class="org-card-role">${transRole('서기')}</div>
+          <div class="org-card-name">${transName('김민준')}</div>
         </div>
       </div>
     </div>
@@ -1686,17 +1652,28 @@ function renderOrgChart(){
     <!-- 3단: 5개 팀 -->
     <div class="org-row" style="gap:16px;align-items:flex-start">
       ${[
-        ['기업산업분석팀','Industry Analysis', 'Research'],
-        ['IPO팀','IPO & Valuation', 'Research'],
-        ['교육팀','Finance Education', 'Research'],
-        ['콘텐츠팀','Content & PR', ''],
-        ['이벤트팀','Networking', ''],
-      ].map(([name, en, prefix]) => `
+        ['기업산업분석팀','Industry Analysis','Research','','김민준','팀장'],
+        ['IPO팀',        'IPO Team',         'Research','정래현 · 박현민','이승규','팀장'],
+        ['교육팀',       'Education',        'Research','정래현 · 박현민','박찬영','팀장'],
+        ['콘텐츠팀',     'Content',          '',        '이다현 · 김민준','이지원','팀장'],
+        ['이벤트팀',     'Events',           '',        '이다현 · 김민준','최윤수','팀장'],
+      ].map(([nameKo, nameEn, prefix, chiefs, leader, leaderRole]) => `
       <div class="org-node has-parent">
         <div class="org-card team">
-          ${prefix ? `<div class="org-card-role">${prefix}</div>` : '<div class="org-card-role" style="opacity:0">-</div>'}
-          <div class="org-card-name" style="font-size:.88rem">${name}</div>
-          <div class="org-card-sub">${en}</div>
+          ${prefix
+            ? `<div class="org-card-role">${prefix}</div>`
+            : '<div class="org-card-role" style="opacity:0">-</div>'}
+          <div class="org-card-name" style="font-size:.88rem">${currentLang==='en' ? nameEn : nameKo}</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px">
+            ${chiefs ? `<div>
+              <span style="color:var(--grey);font-weight:700;font-size:.65rem;letter-spacing:.06em">${transRole('부장')}</span>
+              <span style="color:var(--grey);font-size:.75rem;margin-left:4px">${chiefs.split(' · ').map(n=>transName(n)).join(' · ')}</span>
+            </div>` : ''}
+            <div>
+              <span style="color:var(--gold);font-weight:700;font-size:.65rem;letter-spacing:.06em">${transRole(leaderRole)}</span>
+              <span style="color:var(--white);font-size:.75rem;font-weight:600;margin-left:4px">${transName(leader)}</span>
+            </div>
+          </div>
         </div>
       </div>`).join('')}
     </div>
@@ -1724,45 +1701,51 @@ function renderMembers(){
     container.innerHTML = `
       <div class="empty-box" style="padding:60px 0">
         <div class="empty-icon">👥</div>
-        <h3>${currentCohort}기 멤버 정보가 준비 중입니다</h3>
-        <p>곧 업데이트될 예정입니다.</p>
+        <h3>${currentCohort}기 모집이 미정입니다</h3>
+        <p>모집이 확정되면 업데이트될 예정입니다.</p>
       </div>`;
     return;
   }
 
+  const svgIcon = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:55%;height:55%;opacity:.85"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/></svg>';
+
   function renderMemberCard(m, dept) {
-    const name = typeof m === 'string' ? m : m.name;
-    const role = typeof m === 'string' ? '' : m.role;
+    const name     = typeof m === 'string' ? m : m.name;
+    const role     = typeof m === 'string' ? '' : m.role;
     const isLeader = role === '팀장' || role === '부장';
-    const svgIcon = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:55%;height:55%;opacity:.85"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="currentColor"/></svg>';
+    const dispName = transName(name);
+    const dispRole = transRole(role);
+    const dispDept = dept.replace('Research — ', '');
+    const avatar   = svgIcon;
+
     return '<div class="member-card' + (isLeader ? ' member-leader' : '') + '">'
-      + '<div class="member-avatar' + (isLeader ? ' leader-avatar' : '') + '">' + svgIcon + '</div>'
-      + '<div class="member-name">' + name + '</div>'
+      + '<div class="member-avatar' + (isLeader ? ' leader-avatar' : '') + '">' + avatar + '</div>'
+      + '<div class="member-name">' + dispName + '</div>'
       + (role
-          ? '<div class="member-role' + (isLeader ? ' leader-role' : '') + '">' + role + '</div>'
-          : '<div class="member-dept">' + dept.replace('Research — ','') + '</div>')
+          ? '<div class="member-role' + (isLeader ? ' leader-role' : '') + '">' + dispRole + '</div>'
+          : '<div class="member-dept">' + dispDept + '</div>')
       + '</div>';
   }
 
   function renderDeptBlock(dept, members) {
     return '<div class="dept-group fu">'
-      + '<div class="dept-group-title">' + dept.replace('Research — ','') + '</div>'
+      + '<div class="dept-group-title">' + dept.replace('Research — ', '') + '</div>'
       + '<div class="members-grid">'
       + members.map(m => renderMemberCard(m, dept)).join('')
       + '</div></div>';
   }
 
-  const resFilled   = researchEntries.filter(([,m]) => m.length > 0);
-  const otherFilled = otherEntries.filter(([,m]) => m.length > 0);
+  const resFilled   = researchEntries.filter(([, m]) => m.length > 0);
+  const otherFilled = otherEntries.filter(([, m]) => m.length > 0);
 
   let html = '';
   if (resFilled.length) {
     html += '<div class="member-section-label"><span>Research</span></div>';
-    html += resFilled.map(([d,m]) => renderDeptBlock(d, m)).join('');
+    html += resFilled.map(([d, m]) => renderDeptBlock(d, m)).join('');
   }
   if (otherFilled.length) {
     html += '<div class="member-section-label" style="margin-top:48px"><span>Operations</span></div>';
-    html += otherFilled.map(([d,m]) => renderDeptBlock(d, m)).join('');
+    html += otherFilled.map(([d, m]) => renderDeptBlock(d, m)).join('');
   }
   container.innerHTML = html;
   document.querySelectorAll('#membersList .fu').forEach(el => observer.observe(el));
@@ -1865,7 +1848,6 @@ function viewRes(id){
       <button class="btn-edit" onclick="editRes('${p.id}')">✏ 수정</button>
       <button class="btn-del" onclick="event.stopPropagation();delRes('${p.id}')">🗑 삭제</button>
     </div>`:'';
-
   openM('resViewModal');
 }
 function editRes(id){
@@ -2070,7 +2052,6 @@ function viewEv(id){
       <button class="btn-edit" onclick="editEv('${p.id}')">✏ 수정</button>
       <button class="btn-del" onclick="event.stopPropagation();delEv('${p.id}')">🗑 삭제</button>
     </div>`:'';
-
   openM('evViewModal');
 }
 function editEv(id){
@@ -2106,6 +2087,266 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext();
 });
 
+/* ══════════════════════════════════════
+   실시간 금융 뉴스 티커
+══════════════════════════════════════ */
+function getNewsSlotKey() {
+  const now = new Date();
+  const kstOffset = 9 * 60;
+  const utcMin = now.getTime() / 1000 / 60;
+  const kstMin = utcMin + kstOffset;
+  const kstDate = new Date((kstMin - 8 * 60) * 60 * 1000);
+  const y = kstDate.getUTCFullYear();
+  const m = String(kstDate.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(kstDate.getUTCDate()).padStart(2, '0');
+  return `fb_news_${y}-${m}-${d}`;
+}
+
+function getMsUntilNext8AM() {
+  const now = new Date();
+  const kstNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const kstMidnight = new Date(kstNow);
+  kstMidnight.setUTCHours(0, 0, 0, 0);
+  const kst8AM = new Date(kstMidnight.getTime() + 8 * 60 * 60 * 1000);
+  const kst8AM_utc = new Date(kst8AM.getTime() - 9 * 60 * 60 * 1000);
+  const kstHour = kstNow.getUTCHours();
+  let targetUTC;
+  if (kstHour < 8) {
+    targetUTC = kst8AM_utc;
+  } else {
+    targetUTC = new Date(kst8AM_utc.getTime() + 24 * 60 * 60 * 1000);
+  }
+  return targetUTC - now;
+}
+
+async function fetchFinanceNews() {
+  const CACHE_KEY = getNewsSlotKey();
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const migrated = parsed.map(item =>
+          typeof item === 'string'
+            ? { title: item, url: `https://search.naver.com/search.naver?where=news&query=${encodeURIComponent(item)}&sort=1` }
+            : item
+        );
+        renderTicker(migrated);
+        return;
+      }
+    } catch(e) {}
+  }
+  renderTicker([{title:'🔄 오늘의 금융 뉴스 불러오는 중...', url:null}], false);
+  try {
+    const newsItems = await generateNewsWithClaude();
+    saveAndRender(newsItems, CACHE_KEY);
+  } catch(err) {
+    renderTicker(NEWS_POOL.slice(0, 12));
+  }
+}
+
+function generateNewsWithClaude() {
+  const slot = getNewsSlotKey();
+  const seed = slot.split('-').reduce((a, b) => a + parseInt(b.replace('fb_news_','') || b || 0), 0);
+  function seededShuffle(arr, seed) {
+    const a = [...arr]; let s = seed;
+    for (let i = a.length - 1; i > 0; i--) {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      const j = Math.abs(s) % (i + 1);
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  const shuffled = seededShuffle(NEWS_POOL, seed);
+  return Promise.resolve(shuffled.slice(0, 12));
+}
+
+function makeNaverUrl(q) {
+  return 'https://search.naver.com/search.naver?where=news&query=' + encodeURIComponent(q) + '&sm=tab_opt&sort=1';
+}
+
+const NEWS_POOL = [
+  { title: '코스피, 외국인 2조 순매수에 8,500선 돌파 시도', url: makeNaverUrl('코스피 외국인 순매수') },
+  { title: '코스닥 1,200선 안착…AI 반도체 테마 강세 지속', url: makeNaverUrl('코스닥 AI 반도체 1200') },
+  { title: '삼성전자, 2분기 영업이익 10조 돌파 전망', url: makeNaverUrl('삼성전자 2분기 영업이익') },
+  { title: '삼성전자, HBM3E 엔비디아 공급 재개 확정', url: makeNaverUrl('삼성전자 HBM 엔비디아') },
+  { title: 'SK하이닉스, HBM4 양산 본격화…엔비디아 독점 공급', url: makeNaverUrl('SK하이닉스 HBM4 양산') },
+  { title: '엔비디아 젠슨 황 방한…삼성·SK하이닉스와 회동', url: makeNaverUrl('엔비디아 젠슨황 방한 삼성 SK') },
+  { title: 'TSMC 1분기 순익 40% 급증…AI 수요 폭발', url: makeNaverUrl('TSMC 실적 AI 수요') },
+  { title: '현대차, 미국 조지아 전기차 공장 풀가동 돌입', url: makeNaverUrl('현대차 조지아 전기차 공장') },
+  { title: '기아, 1분기 영업이익 2.2조…사상 최대 경신', url: makeNaverUrl('기아 영업이익 최대') },
+  { title: '한국은행, 기준금리 2.75% 동결…하반기 인하 시사', url: makeNaverUrl('한국은행 기준금리') },
+  { title: '미 연준 6월 FOMC 금리 동결…연내 2회 인하 전망', url: makeNaverUrl('연준 FOMC 금리 인하') },
+  { title: '원/달러 환율 1,380원대 진입…6개월 만에 최저', url: makeNaverUrl('원달러 환율') },
+  { title: 'KB금융, 1분기 순이익 1.6조…자사주 소각 결정', url: makeNaverUrl('KB금융 순이익 자사주') },
+  { title: '신한금융, 동남아 은행 인수로 글로벌 확장 가속', url: makeNaverUrl('신한금융 해외 인수') },
+  { title: '케이뱅크, 코스피 상장예비심사 통과…IPO 재추진', url: makeNaverUrl('케이뱅크 IPO 상장') },
+  { title: 'MBK파트너스, 고려아연 공개매수 2차전 돌입', url: makeNaverUrl('MBK파트너스 고려아연') },
+  { title: '태영건설 워크아웃 종결…부동산 PF 정상화 마무리', url: makeNaverUrl('태영건설 워크아웃 PF') },
+  { title: '한화오션, 미 해군 함정 MRO 계약 4.2조 수주', url: makeNaverUrl('한화오션 미해군 수주') },
+  { title: 'HD현대중공업, LNG선 10척 수주…연간 목표 초과', url: makeNaverUrl('HD현대중공업 LNG 수주') },
+  { title: 'LG에너지솔루션, 미시간 배터리 공장 2단계 증설', url: makeNaverUrl('LG에너지솔루션 미국 공장') },
+  { title: '두산에너빌리티, 체코 원전 수주 최종 계약 체결', url: makeNaverUrl('두산에너빌리티 체코 원전') },
+  { title: '비트코인 11만 달러 돌파…업비트 거래량 5조 육박', url: makeNaverUrl('비트코인 11만달러 업비트') },
+  { title: '5월 수출 600억 달러 돌파…반도체 수출 역대 최대', url: makeNaverUrl('5월 수출 반도체') },
+  { title: '트럼프 관세 90일 유예 만료…한미 협상 분수령', url: makeNaverUrl('트럼프 관세 한미 협상') },
+  { title: '크래프톤, 인조이 글로벌 출시 첫 달 매출 1,000억', url: makeNaverUrl('크래프톤 인조이') },
+];
+
+function saveAndRender(newsItems, cacheKey) {
+  if (!newsItems || newsItems.length === 0) throw new Error('empty');
+  localStorage.setItem(cacheKey, JSON.stringify(newsItems));
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('fb_news_') && k !== cacheKey)
+    .forEach(k => localStorage.removeItem(k));
+  renderTicker(newsItems);
+}
+
+function renderTicker(items, animate = true) {
+  const inner = document.getElementById('tickerInner');
+  if (!inner) return;
+  const all = [...items, ...items];
+  inner.innerHTML = all.map(item => {
+    const title = typeof item === 'string' ? item : item.title;
+    const url   = typeof item === 'string' ? null  : item.url;
+    if (url) {
+      return `<a class="ticker-item ticker-link" href="${url}" target="_blank" rel="noopener noreferrer">${escTicker(title)}</a>`;
+    }
+    return `<span class="ticker-item">${escTicker(title)}</span>`;
+  }).join('');
+  const speed = Math.max(20, items.length * 3.5);
+  inner.style.animationDuration = speed + 's';
+  inner.style.animationPlayState = animate ? 'running' : 'paused';
+}
+
+function escTicker(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function scheduleNewsRefresh() {
+  const ms = getMsUntilNext8AM();
+  const hh = Math.floor(ms / 1000 / 60 / 60);
+  const mm = Math.floor((ms / 1000 / 60) % 60);
+  console.log(`📰 뉴스 다음 갱신: ${hh}시간 ${mm}분 후 (한국시간 오전 8시)`);
+  setTimeout(() => {
+    localStorage.removeItem(getNewsSlotKey());
+    fetchFinanceNews();
+    scheduleNewsRefresh();
+  }, ms + 5000);
+}
+
+/* ══════════════════════════════════════
+   HOME HERO EFFECTS
+══════════════════════════════════════ */
+function initHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = {x: -999, y: -999};
+  function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : H + 10;
+      this.vx = (Math.random() - .5) * .4;
+      this.vy = -(Math.random() * .6 + .2);
+      this.r = Math.random() * 1.5 + .5;
+      this.alpha = Math.random() * .5 + .2;
+      this.life = 0;
+      this.maxLife = Math.random() * 300 + 200;
+    }
+    update() {
+      const dx = this.x - mouse.x, dy = this.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) { this.vx += dx / dist * .3; this.vy += dy / dist * .3; }
+      this.vx *= .99; this.vy *= .99;
+      this.x += this.vx; this.y += this.vy;
+      this.life++;
+      if (this.life > this.maxLife || this.y < -10) this.reset(false);
+    }
+    draw() {
+      const progress = this.life / this.maxLife;
+      const a = this.alpha * (progress < .2 ? progress/.2 : progress > .8 ? (1-progress)/.2 : 1);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(232,168,0,${a})`;
+      ctx.fill();
+    }
+  }
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(232,168,0,${(.15*(1-d/120)).toFixed(3)})`;
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+  let animId;
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawLines();
+    particles.forEach(p => { p.update(); p.draw(); });
+    animId = requestAnimationFrame(animate);
+  }
+  function start() {
+    resize();
+    particles = Array.from({length: 80}, () => new Particle());
+    animate();
+  }
+  window.stopHeroCanvas  = () => { cancelAnimationFrame(animId); };
+  window.startHeroCanvas = () => { resize(); animate(); };
+  window.addEventListener('resize', () => { resize(); });
+  canvas.closest('section')?.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  canvas.closest('section')?.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+  start();
+}
+
+function animateCountUp() {
+  const targets = [
+    {selector: '.hs-item:nth-child(1) .hs-num', target: 50, suffix: '+'},
+    {selector: '.hs-item:nth-child(2) .hs-num', target: 5,  suffix: ''},
+    {selector: '.hs-item:nth-child(3) .hs-num', target: 20, suffix: '+'},
+    {selector: '.hs-item:nth-child(4) .hs-num', target: 3,  suffix: ''},
+  ];
+  targets.forEach(t => {
+    const el = document.querySelector(t.selector);
+    if (!el) return;
+    const supHTML = t.suffix ? `<sup style="font-size:1.2rem">${t.suffix}</sup>` : '';
+    let current = 0;
+    const duration = 1800;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      current = Math.round(eased * t.target);
+      el.innerHTML = current + supHTML;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function initHeroEffects() {
+  initHeroCanvas();
+  setTimeout(animateCountUp, 1000);
+}
+
+
 /* ══════════ SAMPLE DATA ══════════ */
 function loadSamples(){
   const sw=[
@@ -2133,405 +2374,16 @@ function loadSamples(){
   resPosts.sort((a,b)=>new Date(b.date)-new Date(a.date));saveRes();
 }
 
-/* ══════════════════════════════════════
-   실시간 금융 뉴스 티커
-   - Claude AI로 뉴스 생성 (매일 자동 갱신)
-   - localStorage 캐시 (당일 재방문 시 재사용)
-══════════════════════════════════════ */
-
-const FALLBACK_NEWS = [
-  '코스피·코스닥·파생상품시장, 6월 3일 전면 휴장',
-  '코스피, AI 관련주 주도로 최고치 랠리 연장',
-  '5월 코스피 8,500p 육박…사상 최고치 마감',
-  '삼성전자·SK하이닉스 쏠림에 시총 첫 7,000조 돌파',
-  '젠슨 황 방한 기대감에 엔비디아發 호재 지속 유입',
-  '한화오션, 하루 7% 급락…조정인가 매수 기회인가',
-  '두산에너빌리티, 10만원선 사수 공방 지속',
-  '국내 증시, 코스피-코스닥 차별화 장세 이어져',
-  '미 재무부, 이란 암호화폐 거래 플랫폼 제재 단행',
-  '영국 상원, 과도한 스테이블코인 규제 경쟁력 약화 우려',
-  '비트코인, 스트래티지 의존도 과다 우려에 이틀 연속 하락',
-  '5월 무역수지 269억달러…사상 최대 흑자 기록',
-];
-
-// 한국시간 오전 8시 기준으로 뉴스 슬롯 계산
-// 예) 오전 7:59 → 어제 슬롯 / 오전 8:00 이후 → 오늘 슬롯
-function getNewsSlotKey() {
-  const now = new Date();
-  // 한국 시간 = UTC+9
-  const kstOffset = 9 * 60; // 분
-  const utcMin = now.getTime() / 1000 / 60; // UTC 분
-  const kstMin = utcMin + kstOffset;
-
-  const kstDate = new Date((kstMin - 8 * 60) * 60 * 1000); // 08:00 기준 shift
-  const y = kstDate.getUTCFullYear();
-  const m = String(kstDate.getUTCMonth() + 1).padStart(2, '0');
-  const d = String(kstDate.getUTCDate()).padStart(2, '0');
-  return `fb_news_${y}-${m}-${d}`;
-}
-
-// 다음 갱신 시각(한국시간 오전 8시)까지 남은 ms 계산
-function getMsUntilNext8AM() {
-  const now = new Date();
-  const kstNow = new Date(now.getTime() + 9 * 60 * 60 * 1000); // KST
-
-  // 다음 오전 8시 (KST)
-  const next8 = new Date(kstNow);
-  next8.setUTCHours(8 - 9, 0, 0, 0); // KST 08:00 = UTC -01:00 → 전날 23:00 UTC
-  // 더 간단하게: KST 기준으로 오늘 8시를 구하고 이미 지났으면 내일 8시
-  const kstMidnight = new Date(kstNow);
-  kstMidnight.setUTCHours(0, 0, 0, 0);
-  const kst8AM = new Date(kstMidnight.getTime() + 8 * 60 * 60 * 1000); // KST 오전 8시 (UTC)
-  const kst8AM_utc = new Date(kst8AM.getTime() - 9 * 60 * 60 * 1000); // → UTC 전날 23:00
-
-  // 현재 KST가 8시 이전이면 → 오늘 KST 8시, 이후면 → 내일 KST 8시
-  const kstHour = kstNow.getUTCHours();
-  const kstMin  = kstNow.getUTCMinutes();
-  let targetUTC;
-  if (kstHour < 8) {
-    // 오늘 KST 08:00 = UTC 23:00 전날
-    targetUTC = kst8AM_utc;
-  } else {
-    // 내일 KST 08:00
-    targetUTC = new Date(kst8AM_utc.getTime() + 24 * 60 * 60 * 1000);
-  }
-
-  return targetUTC - now;
-}
-
-async function fetchFinanceNews() {
-  const CACHE_KEY = getNewsSlotKey();
-
-  // 캐시 있으면 바로 사용
-  const cached = localStorage.getItem(CACHE_KEY);
-  if (cached) {
-    try {
-      const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        const migrated = parsed.map(item =>
-          typeof item === 'string'
-            ? { title: item, url: `https://search.naver.com/search.naver?where=news&query=${encodeURIComponent(item)}&sort=1` }
-            : item
-        );
-        renderTicker(migrated);
-        return;
-      }
-    } catch(e) {}
-  }
-
-  renderTicker([{title:'🔄 오늘의 금융 뉴스 불러오는 중...', url:null}], false);
-
-  try {
-    const newsItems = await generateNewsWithClaude();
-    saveAndRender(newsItems, CACHE_KEY);
-  } catch(err) {
-    console.warn('뉴스 로딩 실패, fallback:', err);
-    // FALLBACK: NEWS_POOL 첫 12개 사용
-    const fallbackItems = NEWS_POOL.slice(0, 12);
-    renderTicker(fallbackItems);
-  }
-}
-
-/* ── 날짜 시드 기반 뉴스 선택 (API 불필요) ── */
-function generateNewsWithClaude() {
-  // 날짜를 시드로 사용해 매일 다른 12개 뉴스 선택
-  const slot = getNewsSlotKey(); // 'fb_news_YYYY-MM-DD'
-  const seed = slot.split('-').reduce((a, b) => a + parseInt(b.replace('fb_news_','') || b || 0), 0);
-
-  function seededShuffle(arr, seed) {
-    const a = [...arr];
-    let s = seed;
-    for (let i = a.length - 1; i > 0; i--) {
-      s = (s * 1664525 + 1013904223) & 0xffffffff;
-      const j = Math.abs(s) % (i + 1);
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  const shuffled = seededShuffle(NEWS_POOL, seed);
-  // NEWS_POOL 각 항목이 이미 {title, url} 형태 → 그대로 반환
-  return Promise.resolve(shuffled.slice(0, 12));
-}
-
-/* ── 뉴스 풀 (매일 다른 조합, 실제 회사명, 정확한 네이버 뉴스 링크) ── */
-function makeNaverUrl(q) {
-  return 'https://search.naver.com/search.naver?where=news&query=' + encodeURIComponent(q) + '&sm=tab_opt&sort=1';
-}
-
-const NEWS_POOL = [
-  // 증시
-  { title: '코스피, 외국인 2조 순매수에 8,500선 돌파 시도', url: makeNaverUrl('코스피 외국인 순매수') },
-  { title: '코스닥 1,200선 안착…AI 반도체 테마 강세 지속', url: makeNaverUrl('코스닥 AI 반도체 1200') },
-  { title: '코스피·코스닥 차별화 심화…대형주만 사상 최고', url: makeNaverUrl('코스피 코스닥 차별화') },
-  // 삼성전자
-  { title: '삼성전자, 2분기 영업이익 10조 돌파 전망', url: makeNaverUrl('삼성전자 2분기 영업이익') },
-  { title: '삼성전자, HBM3E 엔비디아 공급 재개 확정', url: makeNaverUrl('삼성전자 HBM 엔비디아') },
-  { title: '삼성전자 파운드리, TSMC 추격 위해 2nm 수율 개선', url: makeNaverUrl('삼성전자 파운드리 2nm') },
-  // SK하이닉스
-  { title: 'SK하이닉스, HBM4 양산 본격화…엔비디아 독점 공급', url: makeNaverUrl('SK하이닉스 HBM4 양산') },
-  { title: 'SK하이닉스 1분기 영업이익 7조…역대 최대', url: makeNaverUrl('SK하이닉스 영업이익') },
-  // 엔비디아 / 반도체
-  { title: '엔비디아 젠슨 황 방한…삼성·SK하이닉스와 회동', url: makeNaverUrl('엔비디아 젠슨황 방한 삼성 SK') },
-  { title: 'TSMC 1분기 순익 40% 급증…AI 수요 폭발', url: makeNaverUrl('TSMC 실적 AI 수요') },
-  { title: '국내 반도체 장비주, TSMC 수혜에 일제 급등', url: makeNaverUrl('반도체 장비주 TSMC') },
-  // 현대차 / 기아
-  { title: '현대차, 미국 조지아 전기차 공장 풀가동 돌입', url: makeNaverUrl('현대차 조지아 전기차 공장') },
-  { title: '기아, 1분기 영업이익 2.2조…사상 최대 경신', url: makeNaverUrl('기아 영업이익 최대') },
-  { title: '현대차그룹, 트럼프 관세 유예 연장 협상 마무리', url: makeNaverUrl('현대차 트럼프 관세') },
-  // 금리 / 한국은행
-  { title: '한국은행, 기준금리 2.75% 동결…하반기 인하 시사', url: makeNaverUrl('한국은행 기준금리') },
-  { title: '미 연준 6월 FOMC 금리 동결…연내 2회 인하 전망', url: makeNaverUrl('연준 FOMC 금리 인하') },
-  { title: '원/달러 환율 1,380원대 진입…6개월 만에 최저', url: makeNaverUrl('원달러 환율') },
-  { title: '국고채 10년물 금리 3.2%대 하락…채권 강세', url: makeNaverUrl('국고채 금리') },
-  // 금융지주
-  { title: 'KB금융, 1분기 순이익 1.6조…자사주 소각 결정', url: makeNaverUrl('KB금융 순이익 자사주') },
-  { title: '신한금융, 동남아 은행 인수로 글로벌 확장 가속', url: makeNaverUrl('신한금융 해외 인수') },
-  { title: '하나금융, 하나증권 IB 부문 분사 추진 발표', url: makeNaverUrl('하나금융 하나증권 IB') },
-  { title: '카카오뱅크, 중소기업 대출 출시…은행권 긴장', url: makeNaverUrl('카카오뱅크 기업대출') },
-  // IPO / 공모주
-  { title: '케이뱅크, 코스피 상장예비심사 통과…IPO 재추진', url: makeNaverUrl('케이뱅크 IPO 상장') },
-  { title: '컬리, 하반기 코스피 상장 재도전…밸류 2조 목표', url: makeNaverUrl('컬리 IPO 상장') },
-  { title: '두산로보틱스, 수요예측 흥행…공모가 상단 확정', url: makeNaverUrl('두산로보틱스 공모주') },
-  // M&A / 사모펀드
-  { title: 'MBK파트너스, 고려아연 공개매수 2차전 돌입', url: makeNaverUrl('MBK파트너스 고려아연') },
-  { title: '카카오, SM엔터테인먼트 지분 블록딜 매각 완료', url: makeNaverUrl('카카오 SM엔터 매각') },
-  { title: 'KKR, 국내 물류 리츠 5,000억 규모 인수 추진', url: makeNaverUrl('KKR 국내 리츠 인수') },
-  // 부동산 PF
-  { title: '태영건설 워크아웃 종결…부동산 PF 정상화 마무리', url: makeNaverUrl('태영건설 워크아웃 PF') },
-  { title: '금융당국, 부동산 PF 정상화 펀드 3조 추가 조성', url: makeNaverUrl('부동산 PF 정상화 펀드') },
-  { title: '서울 강남 아파트 거래량, 6개월 만에 반등 전환', url: makeNaverUrl('서울 아파트 거래량') },
-  // 조선 / 방산
-  { title: '한화오션, 미 해군 함정 MRO 계약 4.2조 수주', url: makeNaverUrl('한화오션 미해군 수주') },
-  { title: 'HD현대중공업, LNG선 10척 수주…연간 목표 초과', url: makeNaverUrl('HD현대중공업 LNG 수주') },
-  { title: '한국항공우주산업, 폴란드 FA-50 추가 수출 협상', url: makeNaverUrl('한국항공우주 FA-50') },
-  // 이차전지 / 에너지
-  { title: 'LG에너지솔루션, 미시간 배터리 공장 2단계 증설', url: makeNaverUrl('LG에너지솔루션 미국 공장') },
-  { title: '포스코퓨처엠, 양극재 캐파 30만톤 확대 발표', url: makeNaverUrl('포스코퓨처엠 양극재') },
-  { title: '두산에너빌리티, 체코 원전 수주 최종 계약 체결', url: makeNaverUrl('두산에너빌리티 체코 원전') },
-  // 가상자산
-  { title: '비트코인 11만 달러 돌파…업비트 거래량 5조 육박', url: makeNaverUrl('비트코인 11만달러 업비트') },
-  { title: '금융위원회, 가상자산 이용자 보호법 2단계 시행', url: makeNaverUrl('금융위 가상자산 이용자보호') },
-  { title: '코인베이스, 한국 법인 설립…업비트·빗썸과 정면승부', url: makeNaverUrl('코인베이스 한국') },
-  // 무역 / 거시경제
-  { title: '5월 수출 600억 달러 돌파…반도체 수출 역대 최대', url: makeNaverUrl('5월 수출 반도체') },
-  { title: '트럼프 관세 90일 유예 만료…한미 협상 분수령', url: makeNaverUrl('트럼프 관세 한미 협상') },
-  { title: '미국 5월 CPI 2.3%…연준 조기 금리 인하 기대 재점화', url: makeNaverUrl('미국 CPI 물가') },
-  // 게임 / 엔터
-  { title: '크래프톤, 인조이 글로벌 출시 첫 달 매출 1,000억', url: makeNaverUrl('크래프톤 인조이') },
-  { title: 'HYBE, 위버스 북미 유료 구독자 500만 돌파', url: makeNaverUrl('HYBE 위버스 북미') },
-];
-
-/* ── 캐시 저장 + 렌더링 ── */
-function saveAndRender(newsItems, cacheKey) {
-  if (!newsItems || newsItems.length === 0) throw new Error('empty');
-  localStorage.setItem(cacheKey, JSON.stringify(newsItems));
-  // 이전 슬롯 캐시 정리
-  Object.keys(localStorage)
-    .filter(k => k.startsWith('fb_news_') && k !== cacheKey)
-    .forEach(k => localStorage.removeItem(k));
-  renderTicker(newsItems);
-}
-
-function renderTicker(items, animate = true) {
-  const inner = document.getElementById('tickerInner');
-  if (!inner) return;
-
-  // 무한 루프를 위해 2배로 복제
-  const all = [...items, ...items];
-  inner.innerHTML = all.map(item => {
-    const title = typeof item === 'string' ? item : item.title;
-    const url   = typeof item === 'string' ? null  : item.url;
-    if (url) {
-      return `<a class="ticker-item ticker-link" href="${url}" target="_blank" rel="noopener noreferrer">${escTicker(title)}</a>`;
-    }
-    return `<span class="ticker-item">${escTicker(title)}</span>`;
-  }).join('');
-
-  // 뉴스 개수에 따라 스크롤 속도 조절 (많을수록 느리게)
-  const speed = Math.max(20, items.length * 3.5);
-  inner.style.animationDuration = speed + 's';
-
-  if (!animate) {
-    inner.style.animationPlayState = 'paused';
-  } else {
-    inner.style.animationPlayState = 'running';
-  }
-}
-
-function escTicker(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-// 한국시간 매일 오전 8시에 자동 갱신
-function scheduleNewsRefresh() {
-  const ms = getMsUntilNext8AM();
-
-  const hh = Math.floor(ms / 1000 / 60 / 60);
-  const mm = Math.floor((ms / 1000 / 60) % 60);
-  console.log(`📰 뉴스 다음 갱신: ${hh}시간 ${mm}분 후 (한국시간 오전 8시)`);
-
-  setTimeout(() => {
-    // 현재 슬롯 캐시 삭제 후 새로 로딩
-    const curKey = getNewsSlotKey();
-    localStorage.removeItem(curKey);
-    fetchFinanceNews();
-    scheduleNewsRefresh(); // 다음날 오전 8시도 예약
-  }, ms + 5000); // 5초 여유
-}
 
 
-/* ══════════════════════════════════════
-   HOME HERO EFFECTS
-══════════════════════════════════════ */
-
-/* ── 파티클 캔버스 ── */
-function initHeroCanvas() {
-  const canvas = document.getElementById('heroCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [], mouse = {x: -999, y: -999};
-
-  function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-  }
-
-  class Particle {
-    constructor() { this.reset(true); }
-    reset(init) {
-      this.x  = Math.random() * W;
-      this.y  = init ? Math.random() * H : H + 10;
-      this.vx = (Math.random() - .5) * .4;
-      this.vy = -(Math.random() * .6 + .2);
-      this.r  = Math.random() * 1.5 + .5;
-      this.alpha = Math.random() * .5 + .2;
-      this.life  = 0;
-      this.maxLife = Math.random() * 300 + 200;
-    }
-    update() {
-      // 마우스 반발
-      const dx = this.x - mouse.x, dy = this.y - mouse.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 100) {
-        this.vx += dx / dist * .3;
-        this.vy += dy / dist * .3;
-      }
-      this.vx *= .99;
-      this.vy *= .99;
-      this.x += this.vx;
-      this.y += this.vy;
-      this.life++;
-      if (this.life > this.maxLife || this.y < -10) this.reset(false);
-    }
-    draw() {
-      const progress = this.life / this.maxLife;
-      const a = this.alpha * (progress < .2 ? progress/.2 : progress > .8 ? (1-progress)/.2 : 1);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(232,168,0,${a})`;
-      ctx.fill();
-    }
-  }
-
-  // 라인 연결
-  function drawLines() {
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i+1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const d = Math.sqrt(dx*dx + dy*dy);
-        if (d < 120) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(232,168,0,${(.15 * (1 - d/120)).toFixed(3)})`;
-          ctx.lineWidth = .5;
-          ctx.stroke();
-        }
-      }
-    }
-  }
-
-  let animId;
-  function animate() {
-    ctx.clearRect(0, 0, W, H);
-    drawLines();
-    particles.forEach(p => { p.update(); p.draw(); });
-    animId = requestAnimationFrame(animate);
-  }
-
-  function start() {
-    resize();
-    particles = Array.from({length: 80}, () => new Particle());
-    animate();
-  }
-
-  // 페이지 전환 시 정지/재시작
-  window.stopHeroCanvas  = () => { cancelAnimationFrame(animId); };
-  window.startHeroCanvas = () => { resize(); animate(); };
-
-  window.addEventListener('resize', () => { resize(); });
-  canvas.closest('section')?.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-  });
-  canvas.closest('section')?.addEventListener('mouseleave', () => {
-    mouse.x = -999; mouse.y = -999;
-  });
-
-  start();
-}
-
-/* ── 숫자 카운트업 ── */
-function animateCountUp() {
-  const targets = [
-    {el: null, selector: '.hs-item:nth-child(1) .hs-num', target: 50, suffix: '+'},
-    {el: null, selector: '.hs-item:nth-child(2) .hs-num', target: 5,  suffix: ''},
-    {el: null, selector: '.hs-item:nth-child(3) .hs-num', target: 20, suffix: '+'},
-    {el: null, selector: '.hs-item:nth-child(4) .hs-num', target: 3,  suffix: ''},
-  ];
-
-  targets.forEach(t => {
-    t.el = document.querySelector(t.selector);
-    if (!t.el) return;
-    const sup = t.el.querySelector('sup');
-    const supHTML = sup ? sup.outerHTML : (t.suffix ? `<sup style="font-size:1.2rem">${t.suffix}</sup>` : '');
-    let current = 0;
-    const duration = 1800;
-    const start = performance.now();
-    function step(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      current = Math.round(eased * t.target);
-      t.el.innerHTML = current + supHTML;
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
-}
-
-/* ── 히어로 초기화 ── */
-function initHeroEffects() {
-  initHeroCanvas();
-  // 통계 숫자 카운트업 (1초 딜레이)
-  setTimeout(animateCountUp, 1000);
-}
-
+/* ══════════ INIT ══════════ */
 loadSamples();
 setLang(currentLang);
-// Hero 이펙트 초기화
+goto('home');
 setTimeout(initHeroEffects, 300);
-
-// 실시간 뉴스 티커 초기화
 fetchFinanceNews();
 scheduleNewsRefresh();
+
 </script>
 </body>
 </html>
